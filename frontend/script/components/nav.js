@@ -18,13 +18,18 @@ export default class Navigation extends HTMLElement {
                 continue;
             }
             navigationLinks += `
-                <a 
-                    class="vertical-line"
-                    href='#${path}'><img
-                    src="img/${routes[path].img}"
-                    title="${routes[path].name}">
+                <a class="vertical-line" href='#${path}'>
+                    <div>
+                        <img
+                            src="img/${routes[path].img}"
+                            title="${routes[path].name}"
+                        >
+                    </div>
+                    <p>
+                        ${routes[path].name}
+                    </p>
                 </a>
-            `;
+                `;
         }
 
         this.innerHTML = `<nav class="bottom-nav">${navigationLinks}</nav>`;

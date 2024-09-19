@@ -18,11 +18,23 @@ body {
 
 .bottom-nav > a {
     padding: 1rem 0.5rem 0.5rem;
+    text-decoration: none;
 }
 
-.bottom-nav > a > img {
+.bottom-nav > a > div{
+    margin: auto;
+    width: fit-content;
+}
+
+.bottom-nav > a > div > img {
     width: 3rem;
     height: auto;
+}
+
+.bottom-nav > a > p {
+    font-size: 0.8rem;
+    text-align: center;
+    color: rgba(160, 160, 160, 0.5);
 }
 
 .bottom-nav > a.vertical-line:not(:first-of-type)::after {
