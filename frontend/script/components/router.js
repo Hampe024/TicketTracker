@@ -6,18 +6,18 @@ export default class Router extends HTMLElement {
 
         this.allRoutes = {
             "": {
-                view: "indexyay",
-                name: "index",
+                view: "My Tickets",
+                name: "My Tickets",
                 img: "icons8-ticket-100.png",
             },
             "newTicket": {
-                view: "",
-                name: "",
+                view: "<new-ticket></new-ticket>",
+                name: "New Ticket",
                 "img": "icons8-plus-math-100.png"
             },
             "account": {
-                view: "",
-                name: "",
+                view: "My Account",
+                name: "My Account",
                 "img": "icons8-male-user-100.png"
             },
             "hidden": {
