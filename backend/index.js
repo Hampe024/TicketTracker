@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const { MongoWrapper } = require('./mongowrapper');
 
@@ -7,6 +8,7 @@ const port = 3000;
 
 const db = new MongoWrapper();
 
+app.use(cors());
 app.use(bodyParser.json());
 
 app.get('/testadd', async (req, res) => {

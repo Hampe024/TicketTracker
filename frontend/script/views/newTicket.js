@@ -1,3 +1,5 @@
+import ticketModel from "../ticketModel.js";
+
 export default class NewTicket extends HTMLElement {
     constructor() {
         super();
@@ -16,7 +18,7 @@ export default class NewTicket extends HTMLElement {
         newInput.required = required;
         newInput.classList.add("input");
         newInput.addEventListener("input", (event) => {
-            this.userInfo[name] = event.target.value;
+            this.ticketinfo[name] = event.target.value;
         });
 
         return newInput;
@@ -39,18 +41,23 @@ export default class NewTicket extends HTMLElement {
         return newSubmit;
     }
 
-    render() {
+    async render() {
         const form = document.createElement("form");
 
         form.appendChild(this.makeInputLabel("Describe the problem you are facing"));
         form.appendChild(this.makeInput("textarea", true, "description"));
-        //add image / attatchment
+        //TODO: image / attatchment
         form.appendChild(this.makeSubmit());
 
         form.addEventListener("submit", async (event) => {
             event.preventDefault();
-            // save ticket to mongo
-            location.hash = "";
+            const success = await ticketModel.newTicket(this.ticketinfo.description);
+            if (success) {
+                console.log("Ticket successfully created")
+                location.hash = "";
+            } else {
+                console.warning("Could not create ticket")
+            }
         });
 
         this.appendChild(form);

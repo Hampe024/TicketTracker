@@ -1,13 +1,13 @@
 const { MongoClient } = require('mongodb');
 
 const uri = "mongodb://127.0.0.1:27017";
-const db = "testdb";
 
 class MongoWrapper {
 
     constructor() {
         this.client = null;
         this.connected = this.connect();
+        this.db = "testdb";
     }
 
     async connect() {
@@ -21,7 +21,7 @@ class MongoWrapper {
     }
 
     async getCollection(collectionName) {
-        const db = this.client.db(db);
+        const db = this.client.db(this.db);
         return db.collection(collectionName);
     }
 

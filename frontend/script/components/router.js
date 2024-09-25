@@ -6,7 +6,7 @@ export default class Router extends HTMLElement {
 
         this.allRoutes = {
             "": {
-                view: "My Tickets",
+                view: "<ticket-view></ticket-view>",
                 name: "My Tickets",
                 img: "icons8-ticket-100.png",
             },
