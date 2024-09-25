@@ -1,3 +1,5 @@
+import userModel from "../userModel.js";
+
 export default class Router extends HTMLElement {
     constructor() {
         super();
@@ -20,8 +22,8 @@ export default class Router extends HTMLElement {
                 name: "My Account",
                 "img": "icons8-male-user-100.png"
             },
-            "hidden": {
-                view: "hiddenyay",
+            "login-form": {
+                view: "<login-form></login-form>",
                 hidden: true,
             }
         };
@@ -42,7 +44,6 @@ export default class Router extends HTMLElement {
 
     resolveRoute() {
         this.currentRoute = location.hash.replace("#", "").split('?')[0];
-
         for (const route in this.routes) {
             this.routes[route].active = this.currentRoute === route;
         }
@@ -51,6 +52,12 @@ export default class Router extends HTMLElement {
     }
 
     render() {
+        const userId = localStorage.getItem("userId");
+
+        // if not logged in
+        if (!userId) {
+            location.hash = "login-form";
+        } 
         // if current # is in routes view it, otherwise 404
         if (this.routes[this.currentRoute]) {
             this.innerHTML = this.routes[this.currentRoute].view;

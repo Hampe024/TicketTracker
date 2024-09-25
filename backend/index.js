@@ -55,8 +55,9 @@ app.get('/tickets', async (req, res) => {
 
 app.get('/user', async (req, res) => {
     try {
+        const query = JSON.parse(req.query.query);
         await db.connected;
-        const result = await db.findOne('user', req.body.query);
+        const result = await db.findOne('user', query);
         res.status(200).json({ success: true, result });
     } catch (error) {
         console.error(`Error: can't get users \n${error}`);

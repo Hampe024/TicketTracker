@@ -47,3 +47,13 @@ body {
     top: 20%;
     display: block;
 }
+
+#loginError {
+    opacity: 0;
+    padding: 0.3rem;
+    background-color: coral;
+    margin: auto;
+    width: fit-content;
+    text-align: center;
+    margin-top: 1rem;
+}
