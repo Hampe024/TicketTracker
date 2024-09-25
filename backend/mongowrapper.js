@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 
 const uri = "mongodb://127.0.0.1:27017";
 
@@ -33,6 +33,14 @@ class MongoWrapper {
     async find(collectionName) {
         const collection = await this.getCollection(collectionName);
         return collection.find().toArray();
+    }
+
+    async findOne(collectionName, query) {
+        if (query.hasOwnProperty('_id')) {
+            query._id = new ObjectId(query._id);
+          }
+        const collection = await this.getCollection(collectionName);
+        return collection.findOne(query);
     }
 }
 

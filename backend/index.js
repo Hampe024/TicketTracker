@@ -53,12 +53,10 @@ app.get('/tickets', async (req, res) => {
     }
 });
 
-
-
 app.get('/user', async (req, res) => {
     try {
         await db.connected;
-        const result = await db.find('user');
+        const result = await db.findOne('user', req.body.query);
         res.status(200).json({ success: true, result });
     } catch (error) {
         console.error(`Error: can't get users \n${error}`);
@@ -81,6 +79,17 @@ app.post('/user', async (req, res) => {
         res.status(200).json({ success: true, result });
     } catch (error) {
         console.error(`Error: can't create user:${newUser} \n${error}`);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.get('/users', async (req, res) => {
+    try {
+        await db.connected;
+        const result = await db.find('user');
+        res.status(200).json({ success: true, result });
+    } catch (error) {
+        console.error(`Error: can't get users \n${error}`);
         res.status(500).json({ success: false, error: error.message });
     }
 });
