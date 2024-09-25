@@ -11,19 +11,6 @@ const db = new MongoWrapper();
 app.use(cors());
 app.use(bodyParser.json());
 
-app.get('/testadd', async (req, res) => {
-    try {
-        await db.connected;
-        const document = { name: "Test3", age: 27 };
-        const result = await db.insertOne('testcollection', document);
-        
-        res.status(200).json({ success: true, result });
-    } catch (error) {
-        console.error('Error inserting document:', error);
-        res.status(500).json({ success: false, error: error.message });
-    }
-});
-
 app.post('/ticket', async (req, res) => {
     try {
         await db.connected;
@@ -35,8 +22,6 @@ app.post('/ticket', async (req, res) => {
         const day = String(currentDate.getDate()).padStart(2, '0');
         const month = String(currentDate.getMonth() + 1).padStart(2, '0');
         const year = currentDate.getFullYear();
-
-        console.log(req.body)
 
         const newTicket = {
             "time-created": `${hours}:${minutes}:${seconds} - ${day} - ${month} - ${year}`,
@@ -50,10 +35,9 @@ app.post('/ticket', async (req, res) => {
             "comment": ""
         }
         const result = await db.insertOne('ticket', newTicket);
-        
         res.status(200).json({ success: true, result });
     } catch (error) {
-        console.error('Error:', error);
+        console.error(`Error: can't insert ticket:${newTicket} to db \n${error}`);
         res.status(500).json({ success: false, error: error.message });
     }
 });
@@ -62,10 +46,41 @@ app.get('/tickets', async (req, res) => {
     try {
         await db.connected;
         const result = await db.find('ticket');
-        
         res.status(200).json({ success: true, result });
     } catch (error) {
-        console.error('Error:', error);
+        console.error(`Error: can't get tickets \n${error}`);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+
+
+app.get('/user', async (req, res) => {
+    try {
+        await db.connected;
+        const result = await db.find('user');
+        res.status(200).json({ success: true, result });
+    } catch (error) {
+        console.error(`Error: can't get users \n${error}`);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.post('/user', async (req, res) => {
+    try {
+        await db.connected;
+
+        console.log(req.body)
+
+        const newUser = {
+            "name": req.body.name,
+            "email": req.body.email,
+            "role": req.body.role, // "customer" or "agent"
+        }
+        const result = await db.insertOne('user', newUser);
+        res.status(200).json({ success: true, result });
+    } catch (error) {
+        console.error(`Error: can't create user:${newUser} \n${error}`);
         res.status(500).json({ success: false, error: error.message });
     }
 });
