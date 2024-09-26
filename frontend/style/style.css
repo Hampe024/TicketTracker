@@ -69,23 +69,37 @@ body {
     border: 1px solid #ccc;
     text-decoration: none;
     box-sizing: border-box;
-    display: inline-block;
+    display: block;
     font-family: 'Source Sans Pro', sans-serif;
     font-size: 1.4rem;
     padding: 0.4rem 1rem;
     text-align: center;
     border-radius: 0.2rem;
     line-height: 1.4;
+    width: fit-content;
+    margin: auto;
 }
 
-.input, .input-label {
+.input {
     display: block;
     border: 1px solid #ccc;
     border-radius: 0.2rem;
     padding: 0.6rem;
     box-sizing: border-box;
     width: 32rem;
-    max-width: 100%;
+    max-width: 80%;
+    margin: auto;
     margin-bottom: 1.4rem;
 }
 
+.input-label {
+    text-align: center;
+    font-weight: bold;
+}
+
+router-outlet {
+    max-width: 94%;
+    display: inline-block;
+    overflow-x: scroll;
+    padding: 3%;
+}
