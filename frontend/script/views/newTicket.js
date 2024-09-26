@@ -53,10 +53,10 @@ export default class NewTicket extends HTMLElement {
             event.preventDefault();
             const success = await ticketModel.newTicket(this.ticketinfo.description);
             if (success) {
-                console.log("Ticket successfully created")
+                //console.log("Ticket successfully created")
                 location.hash = "";
             } else {
-                console.warning("Could not create ticket")
+                //console.warning("Could not create ticket")
             }
         });
 
