@@ -10,10 +10,20 @@ export default class Tickets extends HTMLElement {
     async connectedCallback() {
         const userId = localStorage.getItem("userId");
         this.tickets = await ticketModel.getTicketByUserId(userId);
-        console.log(this.tickets)
         this.render();
     }
     render() {
-        this.innerHTML = "<h2>Ticket view</h2>"
+        const list = this.tickets.map((ticket) => {
+            return `<single-ticket 
+                    ticket='${JSON.stringify(ticket)}'>
+                </single-ticket>`;
+        }).join("");
+
+        this.innerHTML = `
+            <h2>Your current ticket(s)</h2> 
+            <div class="ticket-list">
+                ${list}
+            </div>
+        `;
     }
 }

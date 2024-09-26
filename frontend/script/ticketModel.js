@@ -18,7 +18,7 @@ const ticketModel = {
         //console.log(localStorage.getItem("userId"))
         const body = {
             "description": description,
-            "userId": localStorage.getItem("userId")
+            "userId": localStorage.getItem("userId"),
         }
         const response = await fetch(`${ticketModel.APIURL}ticket`, {
             body: JSON.stringify(body),

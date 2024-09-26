@@ -31,7 +31,7 @@ app.post('/ticket', async (req, res) => {
             "description": req.body.description,
             "attatchments": {},
             "category": "",
-            "status": "",
+            "status": "recieved",
             "agent": null,
             "actions": "",
             "comment": "",
