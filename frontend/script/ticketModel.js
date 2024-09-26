@@ -15,7 +15,7 @@ const ticketModel = {
     },
 
     newTicket: async (description) => {
-        console.log(localStorage.getItem("userId"))
+        //console.log(localStorage.getItem("userId"))
         const body = {
             "description": description,
             "userId": localStorage.getItem("userId")

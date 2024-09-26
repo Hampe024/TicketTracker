@@ -42,6 +42,22 @@ class MongoWrapper {
         const collection = await this.getCollection(collectionName);
         return collection.findOne(query);
     }
+
+    async deleteOne(collectionName, id) {
+        const collection = await this.getCollection(collectionName);
+        try {
+            const result = await collection.deleteOne({ _id: new ObjectId(id) });
+            if (result.deletedCount === 1) {
+                console.log(`Successfully deleted document with _id: ${id}`);
+            } else {
+                console.log(`No document found with _id: ${id}`);
+            }
+            return result;
+        } catch (e) {
+            console.error("Error deleting document", e);
+            throw e;  // Ensure error bubbles up to the API endpoint
+        }
+    }
 }
 
 module.exports = { MongoWrapper };

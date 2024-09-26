@@ -94,6 +94,19 @@ app.post('/user', async (req, res) => {
     }
 });
 
+app.delete('/user', async (req, res) => {
+    try {
+        await db.connected;
+
+        const userId = req.body.userId;
+        const result = await db.deleteOne('user', userId);
+        res.status(200).json({ success: true, result });
+    } catch (error) {
+        console.error(`Error: can't delete user ${userId} \n${error}`);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
 app.get('/users', async (req, res) => {
     try {
         await db.connected;
