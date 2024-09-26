@@ -38,7 +38,7 @@ export default class Login extends HTMLElement {
         const newSubmit = document.createElement("input");
 
         newSubmit.setAttribute("type", "submit");
-        newSubmit.setAttribute("value", "Logga in");
+        newSubmit.setAttribute("value", "Login");
         newSubmit.classList.add("button");
         return newSubmit;
     }
