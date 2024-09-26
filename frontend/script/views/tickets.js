@@ -8,8 +8,8 @@ export default class Tickets extends HTMLElement {
 
     // connect component
     async connectedCallback() {
-        this.tickets = await ticketModel.fetcher("tickets")
-        console.log(this.tickets)
+        const userId = localStorage.getItem("userId");
+        this.tickets = await ticketModel.getTicketByUserId(userId);
         this.render();
     }
     render() {

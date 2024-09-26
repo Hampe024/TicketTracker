@@ -30,9 +30,9 @@ class MongoWrapper {
         return collection.insertOne(document);
     }
 
-    async find(collectionName) {
+    async find(collectionName, filter = {}) {
         const collection = await this.getCollection(collectionName);
-        return collection.find().toArray();
+        return collection.find(filter).toArray();
     }
 
     async findOne(collectionName, query) {

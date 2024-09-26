@@ -11,6 +11,8 @@ const db = new MongoWrapper();
 app.use(cors());
 app.use(bodyParser.json());
 
+// START ENDPOITS FOR TICKET
+
 app.post('/ticket', async (req, res) => {
     try {
         await db.connected;
@@ -32,7 +34,8 @@ app.post('/ticket', async (req, res) => {
             "status": "",
             "agent": null,
             "actions": "",
-            "comment": ""
+            "comment": "",
+            "userId": req.body.userId
         }
         const result = await db.insertOne('ticket', newTicket);
         res.status(200).json({ success: true, result });
@@ -45,13 +48,20 @@ app.post('/ticket', async (req, res) => {
 app.get('/tickets', async (req, res) => {
     try {
         await db.connected;
-        const result = await db.find('ticket');
+
+        const { userId } = req.query; // get userId from query (if provided) and return only tickets for given user
+        const query = userId ? { userId: userId } : {};
+
+        const result = await db.find('ticket', query);
+
         res.status(200).json({ success: true, result });
     } catch (error) {
         console.error(`Error: can't get tickets \n${error}`);
         res.status(500).json({ success: false, error: error.message });
     }
 });
+
+// START ENDPOITS FOR USER
 
 app.get('/user', async (req, res) => {
     try {
