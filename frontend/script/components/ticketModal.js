@@ -31,10 +31,12 @@ export default class TicketModal extends HTMLElement {
             <div class="ticket-modal-content">
                 <button class="modal-close">X</button>
                 <h2>Ticket Information</h2>
-                    <strong>Description:</strong> ${ticket.description}</li>        <br>
-                    <strong>Status:</strong> ${ticket.status}</li>                  <br>
-                    <strong>Agent:</strong> ${ticket.agent || "Unassigned"}</li>    <br>
-                    <strong>Created:</strong> ${ticket['time-created']}</li>        <br>
+                    <strong>Description:</strong> ${ticket.description}                     <br>
+                    <strong>Status:</strong> ${ticket.status}                               <br>
+                    <strong>Actions taken:</strong> ${ticket.actions || "Nothing so far!"}   <br>
+                    <strong>Comment:</strong> ${ticket.comment}                             <br>
+                    <strong>Agent:</strong> ${ticket.agent || "Unassigned"}                 <br>
+                    <strong>Created:</strong> ${ticket['time-created']}                     <br>
             </div>
         `;
     }
