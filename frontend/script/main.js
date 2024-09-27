@@ -6,6 +6,7 @@ import Tickets from "./views/tickets.js";
 import Login from "./views/login.js";
 import SingleTicket from "./components/singleTicket.js";
 import TicketModal from "./components/ticketModal.js";
+import Account from "./views/account.js";
 
 customElements.define('router-outlet', Router);
 customElements.define('navigation-outlet', Navigation);
@@ -15,3 +16,4 @@ customElements.define('ticket-view', Tickets);
 customElements.define('login-form', Login);
 customElements.define('single-ticket', SingleTicket);
 customElements.define('ticket-modal', TicketModal);
+customElements.define('account-view', Account);

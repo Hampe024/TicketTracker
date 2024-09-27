@@ -18,7 +18,7 @@ export default class Router extends HTMLElement {
                 "img": "icons8-plus-math-100.png"
             },
             "account": {
-                view: "My Account",
+                view: "<account-view></account-view>",
                 name: "My Account",
                 "img": "icons8-male-user-100.png"
             },

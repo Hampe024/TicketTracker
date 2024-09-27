@@ -9,7 +9,8 @@ const userModel = {
     },
 
     getUserById: async (userId) => {
-        const response = await fetch(`${userModel.APIURL}user/?query=${{ "_id": userId }}`);
+        const query = JSON.stringify({ "_id" : userId });
+        const response = await fetch(`${userModel.APIURL}user/?query=${encodeURIComponent(query)}`);
         const result = await response.json();
 
         return result.result;

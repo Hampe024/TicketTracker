@@ -51,20 +51,6 @@ export default class Login extends HTMLElement {
         return errorBox;
     }
 
-    makeRegister() {
-        const registerBox = document.createElement("div");
-        const registerButton = document.createElement("button");
-
-        registerBox.classList.add("register-box");
-        registerButton.classList.add("button");
-        registerButton.innerHTML = "Register an account";
-        registerButton.addEventListener("click", () => {
-            location.hash = "register-form";
-        });
-        registerBox.appendChild(registerButton);
-        return registerBox;
-    }
-
     async render() {
         const form = document.createElement("form");
 
@@ -85,7 +71,6 @@ export default class Login extends HTMLElement {
 
         this.appendChild(this.makeError());
         this.appendChild(form);
-        this.appendChild(this.makeRegister());
     }
 }
 
