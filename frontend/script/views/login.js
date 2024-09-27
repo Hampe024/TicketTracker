@@ -64,6 +64,8 @@ export default class Login extends HTMLElement {
             if (result) {
                 location.hash = "";
                 localStorage.setItem("userId", result._id)
+                const accountEvent = new Event('accountUpdate');
+                window.dispatchEvent(accountEvent);
             } else {
                 document.getElementById("loginError").style.opacity = "1";
             }

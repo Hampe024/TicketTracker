@@ -22,6 +22,8 @@ export default class Account extends HTMLElement {
         btn.addEventListener("click", () => {
             localStorage.removeItem("userId");
             location.hash = "login-form";
+            const accountEvent = new Event('accountUpdate');
+            window.dispatchEvent(accountEvent);
         });
 
         return btn;

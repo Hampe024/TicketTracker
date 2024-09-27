@@ -5,10 +5,22 @@ export default class Navigation extends HTMLElement {
         super();
 
         this.router = new Router();
+        this.render = this.render.bind(this);
     }
 
     // connect component
     connectedCallback() {
+        this.render();
+        window.addEventListener('accountUpdate', this.render);
+    }
+
+    render() {
+        const userId = localStorage.getItem("userId");
+        if (!userId) {
+            this.innerHTML = "";
+            return
+        }
+
         const routes = this.router.routes;
 
         let navigationLinks = "";
