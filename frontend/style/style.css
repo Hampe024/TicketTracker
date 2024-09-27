@@ -17,11 +17,13 @@ body {
 }
 
 .bottom-nav > a {
+    width: 3rem;
     padding: 1rem 0.5rem 0.5rem;
     text-decoration: none;
 }
 
 .bottom-nav > a > div{
+    width: 3rem;
     margin: auto;
     width: fit-content;
 }
@@ -159,4 +161,42 @@ ticket-modal {
     border: 1px solid #ddd;
     margin: 10px;
     background-color: #f9f9f9;
+}
+
+.filter-sort-controls {
+    width: fit-content;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1rem;
+    padding: 10px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.filter-sort-controls label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    margin-right: 15px;
+}
+
+.filter-sort-controls select {
+    margin-top: 5px;
+    padding: 5px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.filter-sort-controls select:focus {
+    border-color: #007bff;
+}
+
+.filter-sort-controls label select {
+    width: 150px;
 }

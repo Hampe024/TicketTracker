@@ -16,6 +16,14 @@ const userModel = {
         return result.result;
     },
 
+    getUserRole: async () => {
+        const userId = localStorage.getItem("userId");
+        if (!userId) { console.error("userId not defined") }
+        const user = await userModel.getUserById(userId);
+        console.log(user)
+        return user.role
+    },
+
     login: async (email) => {
         const query = JSON.stringify({ email: email });
         const response = await fetch(`${userModel.APIURL}user/?query=${encodeURIComponent(query)}`);

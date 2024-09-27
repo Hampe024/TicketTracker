@@ -25,7 +25,17 @@ export default class Router extends HTMLElement {
             "login-form": {
                 view: "<login-form></login-form>",
                 hidden: true,
-            }
+            },
+            "ticketRepository": {
+                view: "<agent-ticket-view></agent-ticket-view>",
+                name: "Ticket repository",
+                img: "icons8-file-cabinet-100.png",
+            },
+            "myTickets": {
+                view: "<my-tickets></my-tickets>",
+                name: "My Tickets",
+                "img": "icons8-ticket-100.png"
+            },
         };
     }
 

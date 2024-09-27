@@ -1,3 +1,4 @@
+import userModel from "../userModel.js";
 import Router from "./router.js";
 
 export default class Navigation extends HTMLElement {
@@ -14,14 +15,52 @@ export default class Navigation extends HTMLElement {
         window.addEventListener('accountUpdate', this.render);
     }
 
-    render() {
+    async render() {
         const userId = localStorage.getItem("userId");
         if (!userId) {
             this.innerHTML = "";
             return
         }
 
-        const routes = this.router.routes;
+        const customerRoutes = {
+            "": {
+                view: "<ticket-view></ticket-view>",
+                name: "My Tickets",
+                img: "icons8-ticket-100.png",
+            },
+            "newTicket": {
+                view: "<new-ticket></new-ticket>",
+                name: "New Ticket",
+                "img": "icons8-plus-math-100.png"
+            },
+            "account": {
+                view: "<account-view></account-view>",
+                name: "My Account",
+                "img": "icons8-male-user-100.png"
+            }
+        };
+
+        const agentRoutes = {
+            "ticketRepository": {
+                view: "<agent-ticket-view></agent-ticket-view>",
+                name: "Ticket repository",
+                img: "icons8-file-cabinet-100.png",
+            },
+            "myTickets": {
+                view: "<my-tickets></my-tickets>",
+                name: "My Tickets",
+                "img": "icons8-ticket-100.png"
+            },
+            "account": {
+                view: "<account-view></account-view>",
+                name: "My Account",
+                "img": "icons8-male-user-100.png"
+            }
+        };
+
+        const userRole = await userModel.getUserRole();
+
+        const routes = userRole === 'agent' ? agentRoutes : customerRoutes;
 
         let navigationLinks = "";
 
