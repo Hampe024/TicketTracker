@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 
 require('dotenv').config({ path: '../.env' });
 const { MongoWrapper } = require('./mongowrapper');
+const sendEmail = require("./mailjet");
 const mailjet = require('node-mailjet').apiConnect(process.env.MAILJET_API_KEY, process.env.MAILJET_SECRET_KEY);
 
 const app = express();
@@ -64,7 +65,7 @@ app.get('/tickets', async (req, res) => {
         const query = userId ? { user: { "id": userId, "name": "John Doe" }} : {};
 
         const result = await db.find('ticket', query);
-        console.log(result)
+        // console.log(result)
 
         res.status(200).json({ success: true, result });
     } catch (error) {
@@ -73,20 +74,26 @@ app.get('/tickets', async (req, res) => {
     }
 });
 
-app.patch('/ticket/:id', (req, res) => {
+app.patch('/ticket/:id', async (req, res) => {
     try {
         const ticketId = req.params.id;
         const updatedFields = req.body;
 
         updatedFields["time-updated"] = getCurrentDate();
 
-        const result = db.updateOne("ticket", ticketId, updatedFields)
+        const result = await db.updateOne("ticket", ticketId, updatedFields)
+        // console.log(result)
 
-        if (result.matchedCount === 0) {
-            console.log("fel")
-            return res.status(404).json({ success: false, message: 'Ticket not found' });
+        if (result.matchedCount > 0) {
+            // res.json({ success: true, message: 'Ticket fields updated successfully' });
+            const email = 'hampe024@gmail.com';
+            const subject = `Ticket ${ticketId} has been updated`;
+            const text = `Hello! One of your tickets has been updated, login to see the change`;
+            sendEmail(res, email, subject, text);
+        } else {
+            res.status(404).json({ success: false, message: 'Ticket not found or not updated' });
         }
-        res.json({ success: true, message: 'Ticket fields updated successfully' });
+        
     } catch (error) {
         console.error(`Error updating ticket: ${error}`);
         res.status(500).json({ success: false, message: 'Failed to update ticket' });
@@ -155,35 +162,8 @@ app.get('/users', async (req, res) => {
 app.post('/send-email', (req, res) => {
     console.log(req.body)
     const { to, subject, text } = req.body;
-    const sendEmail = (to, subject, text) => {
-        const request = mailjet
-            .post('send', { version: 'v3.1' })
-            .request({
-                Messages: [{
-                    From: {
-                        Email: 'hampe0246@gmail.com',
-                        Name: 'Your Name',
-                    },
-                    To: [{
-                        Email: to,
-                        Name: 'Recipient Name',
-                    }],
-                    Subject: subject,
-                    TextPart: text,
-                }],
-            });
-      
-        request
-            .then(result => {
-                console.log(result.body);
-                res.status(200).json({ success: true, result: result.body });
-            })
-            .catch(error => {
-                console.error(`Error: can't send email \n${error}`);
-                res.status(500).json({ success: false, error: error.message });
-            });
-    };
-    sendEmail(to, subject, text);
+
+    sendEmail(res, to, subject, text);
 });
 
 app.listen(port, () => {

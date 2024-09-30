@@ -22,7 +22,7 @@ const ticketModel = {
             "id": user._id,
             "name": user.name
         };
-        console.log(body)
+        // console.log(body)
         const response = await fetch(`${ticketModel.APIURL}ticket`, {
             body: JSON.stringify(body),
             headers: {
