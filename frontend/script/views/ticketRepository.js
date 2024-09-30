@@ -5,9 +5,10 @@ export default class TicketRepository extends HTMLElement {
         super();
         this.tickets = [];
         this.filterOptions = {
-            status: '',  // Can be 'open', 'closed', or ''
+            status: '',  // Can be 'recieved', 'inProgress', or 'closed'
             category: '', // For filtering by category
-            sort: 'asc'  // Can be 'asc' or 'desc' for sorting by time-created
+            sort: 'asc',  // Can be 'asc' or 'desc' for sorting by time-created
+            search: "" // search title, description, category, agent or user
         };
     }
 
@@ -35,18 +36,40 @@ export default class TicketRepository extends HTMLElement {
         this.querySelector('select[name="sort"]').addEventListener('change', (event) => {
             this.handleFilterChange(event);
         });
+
+        this.querySelector('input[type="search"]').addEventListener('input', (event) => {
+            this.handleFilterChange(event);
+        });
     }
 
     handleFilterChange(event) {
         const { name, value } = event.target;
+        console.log(name)
+        console.log(value)
         this.filterOptions[name] = value;
-        this.render();  // Re-render after the filter or sort is updated
-        this.attachEventListeners();  // Re-attach the listeners after the re-render
+    
+        // Re-render only the ticket list
+        this.renderTicketList();
     }
+    
+    
 
     filterAndSortTickets() {
         let filteredTickets = [...this.tickets];
-    
+
+        // Filter by search
+        if (this.filterOptions.search) {
+            const searchTerm = this.filterOptions.search.toLowerCase();
+            filteredTickets = filteredTickets.filter(ticket => {
+                return  ticket.title.toLowerCase().includes(searchTerm) ||
+                        ticket.description.toLowerCase().includes(searchTerm) ||
+                        ticket.category.toLowerCase().includes(searchTerm) ||
+                        (ticket.agent?.toLowerCase() || '').includes(searchTerm) ||
+                        (ticket.user?.toLowerCase() || '').includes(searchTerm);
+            });
+        }
+        
+
         // Filter by status
         if (this.filterOptions.status) {
             filteredTickets = filteredTickets.filter(ticket => {
@@ -79,6 +102,60 @@ export default class TicketRepository extends HTMLElement {
     }
 
     render() {
+        // Render the filter controls only once, not on every filter change
+        if (!this.hasRenderedFilters) {
+            this.innerHTML = `
+                <h2>All tickets</h2> 
+    
+                <div class="filter-sort-controls">
+                    <label>
+                        Status:
+                        <select name="status">
+                            <option value="">All</option>
+                            <option value="recieved">Recieved</option>
+                            <option value="inProgress">In progress</option>
+                            <option value="closed">Closed</option>
+                        </select>
+                    </label>
+                    <label>
+                        Category:
+                        <select name="category">
+                            <option value="">All</option>
+                            <option value="network">Network</option>
+                            <option value="software">Software</option>
+                        </select>
+                    </label>
+                    <label>
+                        Sort by:
+                        <select name="sort">
+                            <option value="asc">Oldest First</option>
+                            <option value="desc">Newest First</option>
+                        </select>
+                    </label>
+                    <label>
+                        Search:
+                        <input type="search" class="input input-search" name="search" placeholder="Account problem">
+                    </label>
+                </div>
+    
+                <div class="ticket-list"></div>
+            `;
+    
+            // Reapply the selected filter and sort values
+            this.querySelector('select[name="status"]').value = this.filterOptions.status;
+            this.querySelector('select[name="category"]').value = this.filterOptions.category;
+            this.querySelector('select[name="sort"]').value = this.filterOptions.sort;
+    
+            this.hasRenderedFilters = true;  // Mark that filters are already rendered
+        }
+    
+        // Only update the ticket list
+        this.renderTicketList();
+    
+        this.attachEventListeners();  // Attach listeners after rendering filters and ticket list
+    }
+    
+    renderTicketList() {
         const filteredTickets = this.filterAndSortTickets();
         const list = filteredTickets.map(ticket => {
             return `
@@ -86,45 +163,9 @@ export default class TicketRepository extends HTMLElement {
                     ticket='${JSON.stringify(ticket)}'>
                 </single-ticket>`;
         }).join("");
-
-        this.innerHTML = `
-            <h2>All tickets</h2> 
-
-            <div class="filter-sort-controls">
-                <label>
-                    Status:
-                    <select name="status">
-                        <option value="">All</option>
-                        <option value="recieved">Recieved</option>
-                        <option value="inProgress">In progress</option>
-                        <option value="closed">Closed</option>
-                    </select>
-                </label>
-                <label>
-                    Category:
-                    <select name="category">
-                        <option value="">All</option>
-                        <option value="network">Network</option>
-                        <option value="software">Software</option>
-                    </select>
-                </label>
-                <label>
-                    Sort by:
-                    <select name="sort">
-                        <option value="asc">Oldest First</option>
-                        <option value="desc">Newest First</option>
-                    </select>
-                </label>
-            </div>
-
-            <div class="ticket-list">
-                ${list}
-            </div>
-        `;
-
-        // Reapply the selected filter and sort values
-        this.querySelector('select[name="status"]').value = this.filterOptions.status;
-        this.querySelector('select[name="category"]').value = this.filterOptions.category;
-        this.querySelector('select[name="sort"]').value = this.filterOptions.sort;
+    
+        // Update only the ticket list section
+        this.querySelector('.ticket-list').innerHTML = list;
     }
+    
 }

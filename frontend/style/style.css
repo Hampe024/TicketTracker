@@ -166,8 +166,8 @@ ticket-modal {
 .filter-sort-controls {
     width: fit-content;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 1rem;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: fit-content;
     padding: 10px;
     margin-bottom: 20px;
     background-color: #f9f9f9;
@@ -179,7 +179,6 @@ ticket-modal {
     font-size: 14px;
     font-weight: bold;
     color: #333;
-    margin-right: 15px;
 }
 
 .filter-sort-controls select {
@@ -191,12 +190,24 @@ ticket-modal {
     background-color: #fff;
     outline: none;
     transition: border-color 0.3s ease;
+    width: 100%;
+}
+
+
+.filter-sort-controls label:has(> select) {
+    width: 100%;
+}
+
+.filter-sort-controls label:has(> input[type="search"]) {
+    grid-column: 1 / 4;
+}
+
+.input-search {
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .filter-sort-controls select:focus {
     border-color: #007bff;
-}
-
-.filter-sort-controls label select {
-    width: 150px;
 }

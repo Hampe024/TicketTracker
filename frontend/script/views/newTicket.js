@@ -24,6 +24,26 @@ export default class NewTicket extends HTMLElement {
         return newInput;
     }
 
+    makeSelect(options, required, name) {
+        const newSelect = document.createElement("select");
+    
+        newSelect.required = required;
+        newSelect.classList.add("select");
+    
+        options.forEach(optionValue => {
+            const option = document.createElement("option");
+            option.value = optionValue;
+            option.textContent = optionValue;
+            newSelect.appendChild(option);
+        });
+    
+        newSelect.addEventListener("change", (event) => {
+            this.ticketinfo[name] = event.target.value;
+        });
+    
+        return newSelect;
+    }
+
     makeInputLabel(text) {
         const newInputLabel = document.createElement("p");
 
@@ -44,14 +64,20 @@ export default class NewTicket extends HTMLElement {
     async render() {
         const form = document.createElement("form");
 
+        form.appendChild(this.makeInputLabel("Title"));
+        form.appendChild(this.makeInput("text", true, "title"));
         form.appendChild(this.makeInputLabel("Describe the problem you are facing"));
         form.appendChild(this.makeInput("textarea", true, "description"));
+        form.appendChild(this.makeInputLabel("Category"));
+        form.appendChild(this.makeSelect(["Unknown", "Database", "Network", "Account", "Security"], false, "category"));
+        form.appendChild(this.makeInputLabel("Department"));
+        form.appendChild(this.makeSelect(["Unknown", "Software", "Hardware", "HR", "Legal"], false, "department"));
         //TODO: image / attatchment
         form.appendChild(this.makeSubmit());
 
         form.addEventListener("submit", async (event) => {
             event.preventDefault();
-            const success = await ticketModel.newTicket(this.ticketinfo.description);
+            const success = await ticketModel.newTicket(this.ticketinfo);
             if (success) {
                 //console.log("Ticket successfully created")
                 location.hash = "";

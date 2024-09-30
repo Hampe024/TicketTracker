@@ -28,9 +28,11 @@ app.post('/ticket', async (req, res) => {
         const newTicket = {
             "time-created": `${hours}:${minutes}:${seconds} - ${day} - ${month} - ${year}`,
             "time-closed": "",
+            "title": req.body.title,
             "description": req.body.description,
             "attatchments": {},
-            "category": "",
+            "category": req.body.category ? req.body.category : "",
+            "department": req.body.department ? req.body.department : "",
             "status": "recieved",
             "agent": null,
             "actions": "",

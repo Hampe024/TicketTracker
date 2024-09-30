@@ -14,12 +14,9 @@ const ticketModel = {
         return result;
     },
 
-    newTicket: async (description) => {
-        //console.log(localStorage.getItem("userId"))
-        const body = {
-            "description": description,
-            "userId": localStorage.getItem("userId"),
-        }
+    newTicket: async (body) => {
+        body["userId"] = localStorage.getItem("userId");
+        console.log(body)
         const response = await fetch(`${ticketModel.APIURL}ticket`, {
             body: JSON.stringify(body),
             headers: {

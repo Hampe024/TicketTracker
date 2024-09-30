@@ -19,6 +19,7 @@ export default class TicketModal extends HTMLElement {
             this.remove();
             document.querySelector('.modal-background').remove();
         });
+        console.log(this.ticket)
     }
 
     render() {
@@ -28,16 +29,17 @@ export default class TicketModal extends HTMLElement {
         document.body.appendChild(background);
 
         this.innerHTML = `
-            <div class="ticket-modal-content">
-                <button class="modal-close">X</button>
-                <h2>Ticket Information</h2>
-                    <strong>Description:</strong> ${ticket.description}                     <br>
-                    <strong>Status:</strong> ${ticket.status}                               <br>
-                    <strong>Actions taken:</strong> ${ticket.actions || "Nothing so far!"}  <br>
-                    <strong>Comment:</strong> ${ticket.comment}                             <br>
-                    <strong>Agent:</strong> ${ticket.agent || "Unassigned"}                 <br>
-                    <strong>Created:</strong> ${ticket['time-created']}                     <br>
-            </div>
+            <button class="modal-close">X</button>
+            <h2>${ticket.title}</h2>
+            <br><strong>Description:</strong> ${ticket.description}
+            <br><strong>Status:</strong> ${ticket.status}
+            <br><strong>Agent:</strong> ${ticket.agent || "Unassigned"}
+            <br><strong>Category:</strong> ${ticket.category || "Unassigned"}
+            <br><strong>Department:</strong> ${ticket.department || "Unassigned"}
+            <br><strong>Actions taken:</strong> ${ticket.actions || "Nothing so far!"}
+            <br><strong>Comment:</strong> ${ticket.comment}
+            <br><strong>Created:</strong> ${ticket['time-created']}
+            <br><strong>Closed:</strong> ${ticket['time-closed'] === "" ? "N/A" : ticket['time-closed']}
         `;
     }
 }
