@@ -8,8 +8,9 @@
 
 single-ticket {
     display: grid;
-    grid-template-columns: 3fr 1fr;
+    grid-template-columns: 7fr 2fr;
     grid-template-rows: 40px 55px;
+    grid-column-gap: 0.5rem;
     height: 100px;
     background-color: rgb(247, 247, 247);
     border-radius: 5px;
@@ -27,12 +28,12 @@ single-ticket span:first-of-type {
     font-weight: bold;
 }
 
-single-ticket span:nth-of-type(2) {
+single-ticket span:nth-of-type(2n) {
     text-align: right;
 }
 
 single-ticket span:last-of-type {
-    grid-column: 1 / 5;
+    /* grid-column: 1 / 5; */
 }
 
 .limited-text {

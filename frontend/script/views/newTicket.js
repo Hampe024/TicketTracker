@@ -70,8 +70,6 @@ export default class NewTicket extends HTMLElement {
         form.appendChild(this.makeInput("textarea", true, "description"));
         form.appendChild(this.makeInputLabel("Category"));
         form.appendChild(this.makeSelect(["Unknown", "Database", "Network", "Account", "Security"], false, "category"));
-        form.appendChild(this.makeInputLabel("Department"));
-        form.appendChild(this.makeSelect(["Unknown", "Software", "Hardware", "HR", "Legal"], false, "department"));
         //TODO: image / attatchment
         form.appendChild(this.makeSubmit());
 

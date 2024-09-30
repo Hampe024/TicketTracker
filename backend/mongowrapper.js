@@ -7,7 +7,7 @@ class MongoWrapper {
     constructor() {
         this.client = null;
         this.connected = this.connect();
-        this.db = "testdb1";
+        this.db = "testdb2";
     }
 
     async connect() {

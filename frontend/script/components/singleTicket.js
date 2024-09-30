@@ -23,7 +23,6 @@ export default class SingleTicket extends HTMLElement {
         const modal = document.createElement('ticket-modal');
         
         modal.setAttribute('ticket', JSON.stringify(this.ticket));
-        
         document.body.appendChild(modal);
     }
 
@@ -33,6 +32,13 @@ export default class SingleTicket extends HTMLElement {
             <span class="limited-text limited-text-title">${this.ticket.title}</span>
             <span><strong>Status:</strong><br> ${this.ticket.status}</span>
             <span class="limited-text limited-text-description">${this.ticket.description}</span>
+            <span><strong>Updated:</strong><br> 
+                ${
+                    this.ticket['time-updated'] === "" ? 
+                    this.ticket['time-created'].replace(/ - /g, ' ') : 
+                    this.ticket['time-updated'].replace(/ - /g, ' ')
+                }
+            </span>
         `
     }
 }

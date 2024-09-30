@@ -11,6 +11,17 @@ const port = 3000;
 
 const db = new MongoWrapper();
 
+function getCurrentDate() {
+    const currentDate = new Date();
+    const hours = String(currentDate.getHours()).padStart(2, '0');
+    const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+    const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const year = currentDate.getFullYear();
+    return `${hours}:${minutes}:${seconds} - ${day} - ${month} - ${year}`;
+}
+
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -20,22 +31,14 @@ app.post('/ticket', async (req, res) => {
     try {
         await db.connected;
 
-        const currentDate = new Date();
-        const hours = String(currentDate.getHours()).padStart(2, '0');
-        const minutes = String(currentDate.getMinutes()).padStart(2, '0');
-        const seconds = String(currentDate.getSeconds()).padStart(2, '0');
-        const day = String(currentDate.getDate()).padStart(2, '0');
-        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-        const year = currentDate.getFullYear();
-
         const newTicket = {
-            "time-created": `${hours}:${minutes}:${seconds} - ${day} - ${month} - ${year}`,
+            "time-created": getCurrentDate(),
+            "time-updated": "",
             "time-closed": "",
             "title": req.body.title,
             "description": req.body.description,
             "attatchments": {},
             "category": req.body.category ? req.body.category : "",
-            "department": req.body.department ? req.body.department : "",
             "status": "recieved",
             "agent": null,
             "actions": "",
@@ -70,6 +73,9 @@ app.patch('/ticket/:id', (req, res) => {
     try {
         const ticketId = req.params.id;
         const updatedFields = req.body;
+
+        updatedFields["time-updated"] = getCurrentDate();
+
         const result = db.updateOne("ticket", ticketId, updatedFields)
 
         if (result.matchedCount === 0) {
