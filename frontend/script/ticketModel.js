@@ -1,3 +1,5 @@
+import userModel from "./userModel.js";
+
 const ticketModel = {
     APIURL: "http://localhost:3000/",  
 
@@ -15,8 +17,12 @@ const ticketModel = {
     },
 
     newTicket: async (body) => {
-        body["userId"] = localStorage.getItem("userId");
-        // console.log(body)
+        const user = await userModel.getUserById(localStorage.getItem("userId"));
+        body["user"] = {
+            "id": user._id,
+            "name": user.name
+        };
+        console.log(body)
         const response = await fetch(`${ticketModel.APIURL}ticket`, {
             body: JSON.stringify(body),
             headers: {

@@ -36,7 +36,8 @@ export default class TicketModal extends HTMLElement {
             <h2>${ticket.title}</h2>
             <p><strong>Description:</strong> ${ticket.description} </p>
             <p><strong>Status:</strong> <span id="ticketStatus">${ticket.status}</span> </p>
-            <p><span><strong>Agent:</strong> <span id="ticketAgent">${ticket.agent || "Unassigned"}</span></span> <span class="assign-btn">Claim</span> </p>
+            <p><span><strong>Agent:</strong> <span id="ticketAgent">${ticket.agent.name || "Unassigned"}</span></span> <span class="assign-btn">Claim</span> </p>
+            <p><span><strong>Customer:</strong> ${ticket.user.name}</span>
             <p><strong>Category:</strong> ${ticket.category || "Unassigned"} </p>
             <p><strong>Actions taken:</strong> ${ticket.actions || "Nothing so far!"} </p>
             <p><strong>Comment:</strong> ${ticket.comment} </p>
@@ -47,15 +48,14 @@ export default class TicketModal extends HTMLElement {
 
         const assignBtnElem = this.querySelector('.assign-btn');
         assignBtnElem.style.display = "none";
-        const userId = localStorage.getItem("userId")
-        const userRole = await userModel.getUserRole(userId)
+        const user = await userModel.getUserById(localStorage.getItem("userId"));
         assignBtnElem.addEventListener('click', async () => {
             assignBtnElem.remove();
-            await ticketModel.updateTicket(ticket._id, { status: "In progress", agent: userId });
+            await ticketModel.updateTicket(ticket._id, { status: "In progress", agent: { "id": user._id, "name": user.name } });
             document.getElementById("ticketStatus").innerHTML = "In progress";
-            document.getElementById("ticketAgent").innerHTML = userId;
+            document.getElementById("ticketAgent").innerHTML = user.name;
         });
-        if (userRole === "agent" && (ticket.agent === null)) {
+        if (user.role === "agent" && (ticket.agent.id === null)) {
             assignBtnElem.style.display = "inline-block";
         }
 

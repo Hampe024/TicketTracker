@@ -59,10 +59,13 @@ export default class TicketRepository extends HTMLElement {
                 return  ticket.title.toLowerCase().includes(searchTerm) ||
                         ticket.description.toLowerCase().includes(searchTerm) ||
                         ticket.category.toLowerCase().includes(searchTerm) ||
-                        (ticket.agent?.toLowerCase() || '').includes(searchTerm) ||
-                        (ticket.user?.toLowerCase() || '').includes(searchTerm);
+                        (ticket.agent?.name?.toLowerCase() || '').includes(searchTerm) ||
+                        (ticket.agent?.id?.toLowerCase() || '').includes(searchTerm) ||
+                        (ticket.user?.name?.toLowerCase() || '').includes(searchTerm) ||
+                        (ticket.user?.id?.toLowerCase() || '').includes(searchTerm);
             });
         }
+
         
 
         // Filter by status

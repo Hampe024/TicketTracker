@@ -40,10 +40,13 @@ app.post('/ticket', async (req, res) => {
             "attatchments": {},
             "category": req.body.category ? req.body.category : "",
             "status": "recieved",
-            "agent": null,
+            "agent": { 
+                "id": null,
+                "name": null
+            },
             "actions": "",
             "comment": "",
-            "userId": req.body.userId
+            "user": req.body.user
         }
         const result = await db.insertOne('ticket', newTicket);
         res.status(200).json({ success: true, result });
@@ -58,9 +61,10 @@ app.get('/tickets', async (req, res) => {
         await db.connected;
 
         const { userId } = req.query; // get userId from query (if provided) and return only tickets for given user
-        const query = userId ? { userId: userId } : {};
+        const query = userId ? { user: { "id": userId, "name": "John Doe" }} : {};
 
         const result = await db.find('ticket', query);
+        console.log(result)
 
         res.status(200).json({ success: true, result });
     } catch (error) {
