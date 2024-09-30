@@ -34,28 +34,31 @@ export default class TicketModal extends HTMLElement {
         this.innerHTML = `
             <button class="modal-close">X</button>
             <h2>${ticket.title}</h2>
-            <br><strong>Description:</strong> ${ticket.description}
-            <br><strong>Status:</strong> ${ticket.status}
-            <br><strong>Agent:</strong> ${ticket.agent || "Unassigned"} <div class="assign-btn">Claim</div>
-            <br><strong>Category:</strong> ${ticket.category || "Unassigned"}
-            <br><strong>Department:</strong> ${ticket.department || "Unassigned"}
-            <br><strong>Actions taken:</strong> ${ticket.actions || "Nothing so far!"}
-            <br><strong>Comment:</strong> ${ticket.comment}
-            <br><strong>Created:</strong> ${ticket['time-created']}
-            <br><strong>Closed:</strong> ${ticket['time-closed'] === "" ? "N/A" : ticket['time-closed']}
+            <p><strong>Description:</strong> ${ticket.description} </p>
+            <p><strong>Status:</strong> <span id="ticketStatus">${ticket.status}</span> </p>
+            <p><span><strong>Agent:</strong> <span id="ticketAgent">${ticket.agent || "Unassigned"}</span></span> <span class="assign-btn">Claim</span> </p>
+            <p><strong>Category:</strong> ${ticket.category || "Unassigned"} </p>
+            <p><strong>Department:</strong> ${ticket.department || "Unassigned"} </p>
+            <p><strong>Actions taken:</strong> ${ticket.actions || "Nothing so far!"} </p>
+            <p><strong>Comment:</strong> ${ticket.comment} </p>
+            <p><strong>Created:</strong> ${ticket['time-created']} </p>
+            <p>Closed:</strong> ${ticket['time-closed'] === "" ? "N/A" : ticket['time-closed']} </p>
         `;
 
         const assignBtnElem = this.querySelector('.assign-btn');
-        assignBtnElem.addEventListener('click', async () => {
-            assignBtnElem.remove();
-            await ticketModel.updateTicket(ticket._id, { status: "inProgress", agent: userId });
-        });
+        assignBtnElem.style.display = "none";
         const userId = localStorage.getItem("userId")
         const userRole = await userModel.getUserRole(userId)
+        assignBtnElem.addEventListener('click', async () => {
+            assignBtnElem.remove();
+            await ticketModel.updateTicket(ticket._id, { status: "In progress", agent: userId });
+            document.getElementById("ticketStatus").innerHTML = "In progress";
+            document.getElementById("ticketAgent").innerHTML = userId;
+        });
         console.log(!userRole === "agent")
         console.log(!ticket.agent === null)
-        if (!userRole === "agent" || !(ticket.agent === null)) {
-            assignBtnElem.style.display = "none";
+        if (userRole === "agent" && (ticket.agent === null)) {
+            assignBtnElem.style.display = "inline-block";
         }
 
     }

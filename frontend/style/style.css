@@ -211,3 +211,12 @@ ticket-modal {
 .filter-sort-controls select:focus {
     border-color: #007bff;
 }
+
+.assign-btn {
+    cursor: pointer;
+    width: fit-content;
+    height: fit-content;
+    padding: 0.2rem;
+    background-color: #d568e6;
+    border-radius: 3px;
+}
