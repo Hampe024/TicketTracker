@@ -113,7 +113,7 @@ export default class TicketRepository extends HTMLElement {
                         <select name="status">
                             <option value="">All</option>
                             <option value="recieved">Recieved</option>
-                            <option value="inProgress">In progress</option>
+                            <option value="In progress">In progress</option>
                             <option value="closed">Closed</option>
                         </select>
                     </label>

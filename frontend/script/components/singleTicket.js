@@ -30,9 +30,9 @@ export default class SingleTicket extends HTMLElement {
     render() {
         this.innerHTML = 
         `
-            <strong>${this.ticket.title}</strong> 
-            <br><br><br><br><br><br>
-            <strong>Status:</strong> ${this.ticket.status}
+            <span class="limited-text limited-text-title">${this.ticket.title}</span>
+            <span><strong>Status:</strong><br> ${this.ticket.status}</span>
+            <span class="limited-text limited-text-description">${this.ticket.description}</span>
         `
     }
 }

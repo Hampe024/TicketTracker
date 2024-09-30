@@ -42,7 +42,7 @@ export default class TicketModal extends HTMLElement {
             <p><strong>Actions taken:</strong> ${ticket.actions || "Nothing so far!"} </p>
             <p><strong>Comment:</strong> ${ticket.comment} </p>
             <p><strong>Created:</strong> ${ticket['time-created']} </p>
-            <p>Closed:</strong> ${ticket['time-closed'] === "" ? "N/A" : ticket['time-closed']} </p>
+            <p><strong>Closed:</strong> ${ticket['time-closed'] === "" ? "N/A" : ticket['time-closed']} </p>
         `;
 
         const assignBtnElem = this.querySelector('.assign-btn');
