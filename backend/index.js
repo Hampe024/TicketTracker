@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 
 require('dotenv').config({ path: '../.env' });
 const { MongoWrapper } = require('./mongowrapper');
-const mailjet = require('node-mailjet').connect(process.env.MAILJET_API_KEY, process.env.MAILJET_SECRET_KEY);
+const mailjet = require('node-mailjet').apiConnect(process.env.MAILJET_API_KEY, process.env.MAILJET_SECRET_KEY);
 
 const app = express();
 const port = 3000;
@@ -63,6 +63,23 @@ app.get('/tickets', async (req, res) => {
     } catch (error) {
         console.error(`Error: can't get tickets \n${error}`);
         res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.patch('/ticket/:id', (req, res) => {
+    try {
+        const ticketId = req.params.id;
+        const updatedFields = req.body;
+        const result = db.updateOne("ticket", ticketId, updatedFields)
+
+        if (result.matchedCount === 0) {
+            console.log("fel")
+            return res.status(404).json({ success: false, message: 'Ticket not found' });
+        }
+        res.json({ success: true, message: 'Ticket fields updated successfully' });
+    } catch (error) {
+        console.error(`Error updating ticket: ${error}`);
+        res.status(500).json({ success: false, message: 'Failed to update ticket' });
     }
 });
 

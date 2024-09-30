@@ -16,13 +16,26 @@ const ticketModel = {
 
     newTicket: async (body) => {
         body["userId"] = localStorage.getItem("userId");
-        console.log(body)
+        // console.log(body)
         const response = await fetch(`${ticketModel.APIURL}ticket`, {
             body: JSON.stringify(body),
             headers: {
                 'content-type': 'application/json'
             },
             method: 'POST'
+        });
+        const result = await response.json();
+
+        return result.success;
+    },
+
+    updateTicket: async (ticketId, body) => {
+        const response = await fetch(`${ticketModel.APIURL}ticket/${ticketId}`, {
+            body: JSON.stringify(body),
+            headers: {
+                'content-type': 'application/json'
+            },
+            method: 'PATCH'
         });
         const result = await response.json();
 

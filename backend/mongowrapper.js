@@ -58,6 +58,11 @@ class MongoWrapper {
             throw e;  // Ensure error bubbles up to the API endpoint
         }
     }
+
+    async updateOne(collectionName, id, update) {
+        const collection = await this.getCollection(collectionName);
+        return collection.updateOne({ '_id': new ObjectId(id) }, { $set: update });
+      }
 }
 
 module.exports = { MongoWrapper };

@@ -1,3 +1,6 @@
+import userModel from "../userModel.js";
+import ticketModel from "../ticketModel.js";
+
 export default class TicketModal extends HTMLElement {
     constructor() {
         super();
@@ -22,7 +25,7 @@ export default class TicketModal extends HTMLElement {
         console.log(this.ticket)
     }
 
-    render() {
+    async render() {
         const ticket = this.ticket;
         const background = document.createElement('div');
         background.classList.add('modal-background');
@@ -33,7 +36,7 @@ export default class TicketModal extends HTMLElement {
             <h2>${ticket.title}</h2>
             <br><strong>Description:</strong> ${ticket.description}
             <br><strong>Status:</strong> ${ticket.status}
-            <br><strong>Agent:</strong> ${ticket.agent || "Unassigned"}
+            <br><strong>Agent:</strong> ${ticket.agent || "Unassigned"} <div class="assign-btn">Claim</div>
             <br><strong>Category:</strong> ${ticket.category || "Unassigned"}
             <br><strong>Department:</strong> ${ticket.department || "Unassigned"}
             <br><strong>Actions taken:</strong> ${ticket.actions || "Nothing so far!"}
@@ -41,5 +44,19 @@ export default class TicketModal extends HTMLElement {
             <br><strong>Created:</strong> ${ticket['time-created']}
             <br><strong>Closed:</strong> ${ticket['time-closed'] === "" ? "N/A" : ticket['time-closed']}
         `;
+
+        const assignBtnElem = this.querySelector('.assign-btn');
+        assignBtnElem.addEventListener('click', async () => {
+            assignBtnElem.remove();
+            await ticketModel.updateTicket(ticket._id, { status: "inProgress", agent: userId });
+        });
+        const userId = localStorage.getItem("userId")
+        const userRole = await userModel.getUserRole(userId)
+        console.log(!userRole === "agent")
+        console.log(!ticket.agent === null)
+        if (!userRole === "agent" || !(ticket.agent === null)) {
+            assignBtnElem.style.display = "none";
+        }
+
     }
 }
