@@ -1,0 +1,46 @@
+.bottom-nav {
+    background-color: rgb(91, 91, 91);
+    position: fixed;
+    bottom: 0;
+    overflow: hidden;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: nowrap;
+    flex-direction: row;
+}
+
+.bottom-nav > a {
+    width: 3rem;
+    padding: 1rem 0.5rem 0.5rem;
+    text-decoration: none;
+}
+
+.bottom-nav > a > div{
+    width: 3rem;
+    margin: auto;
+    width: fit-content;
+}
+
+.bottom-nav > a > div > img {
+    width: 3rem;
+    height: auto;
+}
+
+.bottom-nav > a > p {
+    font-size: 0.8rem;
+    text-align: center;
+    color: rgba(160, 160, 160, 0.5);
+}
+
+.bottom-nav > a.vertical-line:not(:first-of-type)::after {
+    content: "";
+    width: 2px;
+    background: rgba(160, 160, 160, 0.5);
+    margin-left: -2.5rem;
+    height: 60%;
+    position: absolute;
+    top: 20%;
+    display: block;
+}
