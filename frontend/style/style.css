@@ -149,8 +149,6 @@ single-ticket span:last-of-type {
 }
 
 .limited-text-title {
-    overflow: hidden;
-    text-overflow: ellipsis;
     white-space: nowrap;
 }
 
