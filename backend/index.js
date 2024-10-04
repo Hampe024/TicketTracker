@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const formidable = require('formidable');
+
 
 require('dotenv').config({ path: '../.env' });
 const { MongoWrapper } = require('./mongowrapper');
@@ -164,6 +166,29 @@ app.post('/send-email', (req, res) => {
     const { to, subject, text } = req.body;
 
     sendEmail(res, to, subject, text);
+});
+
+
+app.post('/test', (req, res) => {
+    const form = new formidable.IncomingForm();
+    
+    form.parse(req, function(err, fields, files) {
+        if (err) {
+            console.error(`Error parsing the form: ${err}`);
+            return res.status(400).json({ success: false, error: 'Failed to parse form' });
+        }
+
+        const sender = fields['headers[from]'][0];
+        const subject = fields['headers[subject]'][0];
+        const plainContent = fields.plain[0];
+
+        console.log('Sender:', sender);
+        console.log('Subject:', subject);
+        console.log('Plain Content:', plainContent);
+
+        res.writeHead(200, {'content-type': 'text/plain'});
+        res.end('Message Received. Thanks!\r\n');
+    });
 });
 
 app.listen(port, () => {
