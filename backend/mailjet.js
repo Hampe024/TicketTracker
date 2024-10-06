@@ -7,12 +7,12 @@ function sendEmail(res, to, subject, text) {
         .request({
             Messages: [{
                 From: {
-                    Email: 'hampe0246@gmail.com',
-                    Name: 'Your Name',
+                    Email: process.env.MAILJET_SEND_EMAIL,
+                    Name: 'TicketTracker',
                 },
                 To: [{
                     Email: to,
-                    Name: 'Recipient Name',
+                    Name: '',
                 }],
                 Subject: subject,
                 TextPart: text,

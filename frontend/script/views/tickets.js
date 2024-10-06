@@ -1,4 +1,5 @@
 import ticketModel from "../ticketModel.js";
+import userModel from "../userModel.js";
 
 export default class Tickets extends HTMLElement {
     constructor() {
@@ -8,8 +9,9 @@ export default class Tickets extends HTMLElement {
 
     // connect component
     async connectedCallback() {
-        const userId = localStorage.getItem("userId");
-        this.tickets = await ticketModel.getTicketByUserId(userId);
+        const user = await userModel.getUserById(localStorage.getItem("userId"));
+        console.log(user)
+        this.tickets = await ticketModel.getTicketByUserId(user._id, user.email);
         this.render();
     }
     render() {

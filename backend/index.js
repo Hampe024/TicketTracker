@@ -3,27 +3,15 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const formidable = require('formidable');
 
-
 require('dotenv').config({ path: '../.env' });
 const { MongoWrapper } = require('./mongowrapper');
 const sendEmail = require("./mailjet");
-const mailjet = require('node-mailjet').apiConnect(process.env.MAILJET_API_KEY, process.env.MAILJET_SECRET_KEY);
+const helpers = require("./helpers");
 
 const app = express();
 const port = 3000;
 
 const db = new MongoWrapper();
-
-function getCurrentDate() {
-    const currentDate = new Date();
-    const hours = String(currentDate.getHours()).padStart(2, '0');
-    const minutes = String(currentDate.getMinutes()).padStart(2, '0');
-    const seconds = String(currentDate.getSeconds()).padStart(2, '0');
-    const day = String(currentDate.getDate()).padStart(2, '0');
-    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-    const year = currentDate.getFullYear();
-    return `${hours}:${minutes}:${seconds} - ${day} - ${month} - ${year}`;
-}
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -35,7 +23,7 @@ app.post('/ticket', async (req, res) => {
         await db.connected;
 
         const newTicket = {
-            "time-created": getCurrentDate(),
+            "time-created": await helpers.getCurrentDate(),
             "time-updated": "",
             "time-closed": "",
             "title": req.body.title,
@@ -63,12 +51,19 @@ app.get('/tickets', async (req, res) => {
     try {
         await db.connected;
 
-        const { userId } = req.query; // get userId from query (if provided) and return only tickets for given user
-        const query = userId ? { user: { "id": userId, "name": "John Doe" }} : {};
+        const { userId, email } = req.query; // Get userId and email from query (if provided)
 
-        const result = await db.find('ticket', query);
-        // console.log(result)
+        // Prepare an array of filters for $or query
+        let filters = [];
+        if (userId) {
+            filters.push({ 'user.id': userId });
+        }
+        if (email) {
+            filters.push({ 'user.email': email });
+        }
 
+        // If no filters are provided, return all tickets
+        const result = await db.findWithOr('ticket', filters);
         res.status(200).json({ success: true, result });
     } catch (error) {
         console.error(`Error: can't get tickets \n${error}`);
@@ -78,19 +73,22 @@ app.get('/tickets', async (req, res) => {
 
 app.patch('/ticket/:id', async (req, res) => {
     try {
+        await db.connected;
+
         const ticketId = req.params.id;
         const updatedFields = req.body;
 
-        updatedFields["time-updated"] = getCurrentDate();
+        updatedFields["time-updated"] = await helpers.getCurrentDate();
 
         const result = await db.updateOne("ticket", ticketId, updatedFields)
         // console.log(result)
 
         if (result.matchedCount > 0) {
             // res.json({ success: true, message: 'Ticket fields updated successfully' });
-            const email = 'hampe024@gmail.com';
-            const subject = `Ticket ${ticketId} has been updated`;
-            const text = `Hello! One of your tickets has been updated, login to see the change`;
+            const ticket = await db.findOne("ticket", {_id: ticketId});
+            const email = ticket.user.email;
+            const subject = `One of your tickets has been updated`;
+            const text = `Hello! Ticket '${ticketId}' has had an update, login to see the change`;
             sendEmail(res, email, subject, text);
         } else {
             res.status(404).json({ success: false, message: 'Ticket not found or not updated' });
@@ -161,34 +159,54 @@ app.get('/users', async (req, res) => {
 
 // START ENDPOITS FOR EMAIL
 
-app.post('/send-email', (req, res) => {
+app.post('/send-email', async (req, res) => {
     console.log(req.body)
     const { to, subject, text } = req.body;
 
     sendEmail(res, to, subject, text);
 });
 
-
-app.post('/test', (req, res) => {
+app.post('/recieve-email', async (req, res) => {
     const form = new formidable.IncomingForm();
-    
-    form.parse(req, function(err, fields, files) {
-        if (err) {
-            console.error(`Error parsing the form: ${err}`);
-            return res.status(400).json({ success: false, error: 'Failed to parse form' });
-        }
 
-        const sender = fields['headers[from]'][0];
+    try {
+        await db.connected;
+
+        const { fields, files } = await helpers.parseFormAsync(req, form);
+
+        const sender = fields['envelope[from]'][0];
         const subject = fields['headers[subject]'][0];
         const plainContent = fields.plain[0];
 
-        console.log('Sender:', sender);
-        console.log('Subject:', subject);
-        console.log('Plain Content:', plainContent);
+        const newTicket = {
+            "time-created": await helpers.getCurrentDate(),
+            "time-updated": "",
+            "time-closed": "",
+            "title": subject,
+            "description": plainContent,
+            "attatchments": {},
+            "category": "",
+            "status": "recieved",
+            "agent": { 
+                "id": null,
+                "name": null
+            },
+            "actions": "",
+            "comment": "",
+            "user": {
+                "id": null,
+                "name": null,
+                "email": sender
+            }
+        };
 
-        res.writeHead(200, {'content-type': 'text/plain'});
-        res.end('Message Received. Thanks!\r\n');
-    });
+        const result = await db.insertOne('ticket', newTicket);
+        res.status(200).json({ success: true, result });
+
+    } catch (error) {
+        console.error(`Error: can't insert ticket: to db \n${error}`);
+        res.status(500).json({ success: false, error: error.message });
+    }
 });
 
 app.listen(port, () => {

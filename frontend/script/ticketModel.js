@@ -10,8 +10,8 @@ const ticketModel = {
         return result.result;
     },
 
-    getTicketByUserId: async (userId) => {
-        const dataPoint = `tickets/?userId=${userId}`;
+    getTicketByUserId: async (userId, email=null) => {
+        const dataPoint = `tickets/?userId=${encodeURIComponent(userId)}&email=${encodeURIComponent(email)}`;
         const result = await ticketModel.fetcher(dataPoint)
         return result;
     },
@@ -20,7 +20,8 @@ const ticketModel = {
         const user = await userModel.getUserById(localStorage.getItem("userId"));
         body["user"] = {
             "id": user._id,
-            "name": user.name
+            "name": user.name,
+            "email": user.email
         };
         // console.log(body)
         const response = await fetch(`${ticketModel.APIURL}ticket`, {

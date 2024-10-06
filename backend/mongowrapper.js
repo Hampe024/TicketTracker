@@ -7,7 +7,7 @@ class MongoWrapper {
     constructor() {
         this.client = null;
         this.connected = this.connect();
-        this.db = "testdb3";
+        this.db = "testdb4";
     }
 
     async connect() {
@@ -33,6 +33,20 @@ class MongoWrapper {
     async find(collectionName, filter = {}) {
         const collection = await this.getCollection(collectionName);
         return collection.find(filter).toArray();
+    }
+
+    async findWithOr(collectionName, filters = []) {
+        const collection = await this.getCollection(collectionName);
+    
+        // Check if we have any filters provided
+        if (filters.length === 0) {
+            return collection.find().toArray(); // No filters, return all documents
+        }
+    
+        // Create an OR query if filters are provided
+        const orQuery = { $or: filters };
+    
+        return collection.find(orQuery).toArray();
     }
 
     async findOne(collectionName, query) {
