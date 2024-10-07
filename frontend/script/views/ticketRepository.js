@@ -155,7 +155,8 @@ export default class TicketRepository extends HTMLElement {
         const list = filteredTickets.map(ticket => {
             return `
                 <single-ticket 
-                    ticket='${JSON.stringify(ticket)}'>
+                    ticket='${JSON.stringify(ticket)}'
+                    editable='false'>
                 </single-ticket>`;
         }).join("");
     

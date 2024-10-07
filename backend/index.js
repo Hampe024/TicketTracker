@@ -71,6 +71,32 @@ app.get('/tickets', async (req, res) => {
     }
 });
 
+app.get('/tickets/agent', async (req, res) => {
+    try {
+        await db.connected;
+
+        const { agentId, ticketStatus } = req.query;
+
+        // Prepare an array of filters for $or query
+        let filters = {};
+        if (agentId) {
+            filters['agent.id'] = agentId;
+        }
+        if (ticketStatus) {
+            filters.status = ticketStatus;
+        }
+
+        console.log(filters)
+
+        // If no filters are provided, return all tickets
+        const result = await db.find('ticket', filters);
+        res.status(200).json({ success: true, result });
+    } catch (error) {
+        console.error(`Error: can't get tickets \n${error}`);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
 app.patch('/ticket/:id', async (req, res) => {
     try {
         await db.connected;
@@ -78,9 +104,11 @@ app.patch('/ticket/:id', async (req, res) => {
         const ticketId = req.params.id;
         const updatedFields = req.body;
 
-        updatedFields["time-updated"] = await helpers.getCurrentDate();
-
-        console.log(typeof(ticketId))
+        if (updatedFields.status === "Closed") {
+            updatedFields["time-closed"] = await helpers.getCurrentDate();
+        } else {
+            updatedFields["time-updated"] = await helpers.getCurrentDate();
+        }
 
         const result = await db.updateOne("ticket", ticketId, updatedFields)
         // console.log(result)

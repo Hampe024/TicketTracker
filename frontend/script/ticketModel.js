@@ -16,6 +16,12 @@ const ticketModel = {
         return result;
     },
 
+    getTicketByAgentId: async (userId) => {
+        const dataPoint = `tickets/agent/?agentId=${encodeURIComponent(userId)}&ticketStatus=In progress`;
+        const result = await ticketModel.fetcher(dataPoint)
+        return result;
+    },
+
     newTicket: async (body) => {
         const user = await userModel.getUserById(localStorage.getItem("userId"));
         body["user"] = {

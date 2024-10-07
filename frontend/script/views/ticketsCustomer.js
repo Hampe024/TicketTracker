@@ -1,7 +1,7 @@
 import ticketModel from "../ticketModel.js";
 import userModel from "../userModel.js";
 
-export default class Tickets extends HTMLElement {
+export default class TicketsCustomer extends HTMLElement {
     constructor() {
         super();
         this.tickets = []
@@ -10,14 +10,15 @@ export default class Tickets extends HTMLElement {
     // connect component
     async connectedCallback() {
         const user = await userModel.getUserById(localStorage.getItem("userId"));
-        console.log(user)
+        // console.log(user)
         this.tickets = await ticketModel.getTicketByUserId(user._id, user.email);
         this.render();
     }
     render() {
         const list = this.tickets.map((ticket) => {
             return `<single-ticket 
-                    ticket='${JSON.stringify(ticket)}'>
+                    ticket='${JSON.stringify(ticket)}'
+                    editable='false'>
                 </single-ticket>`;
         }).join("");
 

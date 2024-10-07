@@ -16,7 +16,7 @@
     margin: auto;
 }
 
-.assign-btn {
+.assign-btn, .status-btn {
     cursor: pointer;
     width: fit-content;
     height: fit-content;
