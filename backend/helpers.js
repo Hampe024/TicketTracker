@@ -20,6 +20,20 @@ const helpers = {
                 }
             });
         });
+    },
+
+    extractTicketId(text) {
+        const ticketStart = "Hello! Ticket '";
+        const ticketEnd = "' has had an update";
+    
+        const startIndex = text.indexOf(ticketStart);
+        if (startIndex === -1) return null; // Ticket string not found
+    
+        const endIndex = text.indexOf(ticketEnd, startIndex);
+        if (endIndex === -1) return null; // End string not found
+    
+        const ticketId = text.substring(startIndex + ticketStart.length, endIndex);
+        return ticketId;
     }
 }
 

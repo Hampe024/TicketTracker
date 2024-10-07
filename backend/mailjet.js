@@ -21,7 +21,7 @@ function sendEmail(res, to, subject, text) {
   
     request
         .then(result => {
-            console.log(result.body);
+            // console.log(result.body);
             res.status(200).json({ success: true, result: result.body });
         })
         .catch(error => {

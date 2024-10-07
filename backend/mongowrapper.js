@@ -7,7 +7,7 @@ class MongoWrapper {
     constructor() {
         this.client = null;
         this.connected = this.connect();
-        this.db = "testdb4";
+        this.db = "testdb5";
     }
 
     async connect() {
@@ -75,7 +75,7 @@ class MongoWrapper {
 
     async updateOne(collectionName, id, update) {
         const collection = await this.getCollection(collectionName);
-        return collection.updateOne({ '_id': new ObjectId(id) }, { $set: update });
+        return collection.updateOne({ _id: new ObjectId(id) }, { $set: update });
       }
 }
 

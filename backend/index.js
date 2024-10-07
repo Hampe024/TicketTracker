@@ -80,6 +80,8 @@ app.patch('/ticket/:id', async (req, res) => {
 
         updatedFields["time-updated"] = await helpers.getCurrentDate();
 
+        console.log(typeof(ticketId))
+
         const result = await db.updateOne("ticket", ticketId, updatedFields)
         // console.log(result)
 
@@ -174,37 +176,63 @@ app.post('/recieve-email', async (req, res) => {
 
         const { fields, files } = await helpers.parseFormAsync(req, form);
 
-        const sender = fields['envelope[from]'][0];
-        const subject = fields['headers[subject]'][0];
-        const plainContent = fields.plain[0];
+        // console.log(fields)
 
-        const newTicket = {
-            "time-created": await helpers.getCurrentDate(),
-            "time-updated": "",
-            "time-closed": "",
-            "title": subject,
-            "description": plainContent,
-            "attatchments": {},
-            "category": "",
-            "status": "recieved",
-            "agent": { 
-                "id": null,
-                "name": null
-            },
-            "actions": "",
-            "comment": "",
-            "user": {
-                "id": null,
-                "name": null,
-                "email": sender
+        if (fields.hasOwnProperty('headers[in_reply_to]') && fields['headers[in_reply_to]']) {
+            // is a reply to an update email
+
+            // Iterate through the plain text fields and try to extract the ticket ID
+            let ticketId = null;
+            fields.plain.forEach(text => {
+                const extractedId = helpers.extractTicketId(text);
+                if (extractedId) {
+                    ticketId = extractedId;  // Assign the ticket ID if found
+                }
+            });
+
+            console.log(fields)
+            console.log(fields.reply_plain[0].split('\r\n')[0].trim())
+
+            const updatedFields = {
+                "time-updated": await helpers.getCurrentDate(),
+                "comment": fields.reply_plain[0].split('\r\n')[0].trim()
             }
-        };
 
-        const result = await db.insertOne('ticket', newTicket);
-        res.status(200).json({ success: true, result });
+            const result = await db.updateOne("ticket", ticketId, updatedFields)
+        } else {
+            // is an email to create a new ticket
+            const sender = fields['envelope[from]'][0];
+            const subject = fields['headers[subject]'][0];
+            const plainContent = fields.plain[0];
+
+            const newTicket = {
+                "time-created": await helpers.getCurrentDate(),
+                "time-updated": "",
+                "time-closed": "",
+                "title": subject,
+                "description": plainContent,
+                "attatchments": {},
+                "category": "",
+                "status": "recieved",
+                "agent": { 
+                    "id": null,
+                    "name": null
+                },
+                "actions": "",
+                "comment": "",
+                "user": {
+                    "id": null,
+                    "name": null,
+                    "email": sender
+                }
+            };
+
+            const result = await db.insertOne('ticket', newTicket);
+            res.status(200).json({ success: true, result });
+        }
 
     } catch (error) {
-        console.error(`Error: can't insert ticket: to db \n${error}`);
+        console.error(`Error: can't update db with ticket \n${error}`);
         res.status(500).json({ success: false, error: error.message });
     }
 });
