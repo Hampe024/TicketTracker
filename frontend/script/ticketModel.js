@@ -24,14 +24,14 @@ const ticketModel = {
 
     newTicket: async (body) => {
         const user = await userModel.getUserById(localStorage.getItem("userId"));
-    
+        
         const formData = new FormData();
         formData.set('user', JSON.stringify({
             "id": user._id,
             "name": user.name,
             "email": user.email
         }));
-
+    
         for (const pair of body.entries()) {
             if (pair[0] === "title") {
                 formData.set('title', pair[1]);
@@ -42,21 +42,25 @@ const ticketModel = {
             if (pair[0] === "category") {
                 formData.set('category', pair[1]);
             }
-            if (pair[0] === "files") {
-                formData.set('files', pair[1]);
+            if (pair[0] === "attachments") {
+                formData.append('attachments', pair[1]);
             }
-            console.log(pair[0], pair[1]);
         }
 
-        console.log(formData)
-
+        // for (const entry of formData.entries()) {
+        //     console.log('FormData entry:', entry[0], entry[1]);
+        // }
+    
+        // Send the form data
         const response = await fetch(`${ticketModel.APIURL}ticket`, {
             body: formData,
-            method: 'POST'
+            method: 'POST',
         });
+    
         const result = await response.json();
         return result.success;
     },
+    
     
 
     updateTicket: async (ticketId, body) => {

@@ -40,7 +40,7 @@ const upload = multer({
             cb(new Error('File type not supported'));
         }
     }
-}).array('files', 5); // 'files' is the field name for the file input in the form
+}).array('attachments', 5); // 'files' is the field name for the file input in the form
 
 
 

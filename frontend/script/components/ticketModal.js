@@ -91,18 +91,20 @@ export default class TicketModal extends HTMLElement {
         if (!attachments || attachments.length === 0) {
             return '<p>No attachments found.</p>';
         }
-
+    
         return attachments.map(attachment => {
             if (attachment.contentType.startsWith('image/')) {
                 return `
                     <div>
-                        <img src="data:${attachment.contentType};base64,${attachment.data}" alt="Ticket Attachment" style="max-width: 200px;"/>
+                        <a href="data:${attachment.contentType};base64,${attachment.data}" target="_blank">
+                            <img src="data:${attachment.contentType};base64,${attachment.data}" alt="Ticket Attachment" style="max-width: 200px;"/>
+                        </a>
                     </div>
                 `;
             } else if (attachment.contentType === 'application/pdf') {
                 return `
-                    <div>
-                        <a href="data:${attachment.contentType};base64,${attachment.data}" target="_blank">View PDF</a>
+                    <div class="pdf-link">
+                        <a href="data:${attachment.contentType};base64,${attachment.data}" target="_blank">${attachment.filename}</a>
                     </div>
                 `;
             }

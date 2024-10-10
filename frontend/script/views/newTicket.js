@@ -70,7 +70,14 @@ export default class NewTicket extends HTMLElement {
         fileInput.classList.add("file-input");
     
         fileInput.addEventListener("change", (event) => {
-            this.ticketinfo[name] = event.target.files; // Lagrar de valda filerna
+            const selectedFiles = event.target.files;
+    
+            if (selectedFiles.length > 4) {
+                alert("You can only upload up to 4 files.");
+                fileInput.value = "";
+            } else {
+                this.ticketinfo[name] = selectedFiles;
+            }
         });
     
         return fileInput;
@@ -80,7 +87,7 @@ export default class NewTicket extends HTMLElement {
     async render() {
         const form = document.createElement("form");
     
-        form.setAttribute("enctype", "multipart/form-data"); // Viktigt för att hantera filer
+        form.setAttribute("enctype", "multipart/form-data");
     
         form.appendChild(this.makeInputLabel("Title"));
         form.appendChild(this.makeInput("text", true, "title"));
@@ -91,8 +98,8 @@ export default class NewTicket extends HTMLElement {
         form.appendChild(this.makeInputLabel("Category"));
         form.appendChild(this.makeSelect(["Unknown", "Database", "Network", "Account", "Security"], false, "category"));
     
-        form.appendChild(this.makeInputLabel("Attachments (up to 5 images/PDFs)"));
-        form.appendChild(this.makeFileInput("attachments")); // Lägg till filuppladdning
+        form.appendChild(this.makeInputLabel("Attachments (up to 4 images/PDFs)"));
+        form.appendChild(this.makeFileInput("attachments"));
     
         form.appendChild(this.makeSubmit());
     
@@ -104,19 +111,18 @@ export default class NewTicket extends HTMLElement {
             formData.append("description", this.ticketinfo.description);
             formData.append("category", this.ticketinfo.category || "");
 
-            // Lägg till alla valda filer
-            console.log(this.ticketinfo)
+            // console.log(this.ticketinfo)
             if (this.ticketinfo.attachments) {
                 Array.from(this.ticketinfo.attachments).forEach((file, index) => {
-                    console.log(file)
-                    formData.append(`files`, file);
+                    // console.log(file)
+                    formData.append(`attachments`, file);
                 });
             }
             
-            console.log(formData)
+            // console.log(formData)
             const success = await ticketModel.newTicket(formData);
             if (success) {
-                location.hash = "";  // Återgå till en annan vy efter att biljetten skickats
+                location.hash = "";
             }
         });
     
