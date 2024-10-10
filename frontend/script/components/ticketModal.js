@@ -25,7 +25,6 @@ export default class TicketModal extends HTMLElement {
             this.remove();
             document.querySelector('.modal-background').remove();
         });
-        // console.log(this.ticket)
     }
 
     async makeAssignBtn(ticket) {
@@ -64,22 +63,50 @@ export default class TicketModal extends HTMLElement {
         background.classList.add('modal-background');
         document.body.appendChild(background);
 
+        // Construct the modal HTML
         this.innerHTML = `
             <button class="modal-close">X</button>
             <h2>${ticket.title}</h2>
             <p><strong>Description:</strong> ${ticket.description} </p>
             <p><strong>Status:</strong> <span id="ticketStatus">${ticket.status}</span> <span class="status-btn">Close</span> </p>
             <p><span><strong>Agent:</strong> <span id="ticketAgent">${ticket.agent.name || "Unassigned"}</span></span> <span class="assign-btn">Claim</span> </p>
-            <p><span><strong>Customer:</strong> ${ticket.user.name}</span>
+            <p><span><strong>Customer:</strong> ${ticket.user.name}</span></p>
             <p><strong>Category:</strong> ${ticket.category || "Unassigned"} </p>
             <p><strong>Actions taken:</strong> ${ticket.actions || "Nothing so far!"} </p>
             <p><strong>Comment:</strong> ${ticket.comment} </p>
             <p><strong>Created:</strong> ${ticket['time-created']} </p>
             <p><strong>Updated:</strong> ${ticket['time-updated'] === "" ? "N/A" : ticket['time-updated']} </p>
             <p><strong>Closed:</strong> ${ticket['time-closed'] === "" ? "N/A" : ticket['time-closed']} </p>
+            <div class="attachments">
+                <h3>Attachments:</h3>
+                ${this.renderAttachments(ticket.attachments)}
+            </div>
         `;
 
         await this.makeAssignBtn(ticket);
         await this.makeUpdateStatusBtn(ticket);
+    }
+
+    renderAttachments(attachments) {
+        if (!attachments || attachments.length === 0) {
+            return '<p>No attachments found.</p>';
+        }
+
+        return attachments.map(attachment => {
+            if (attachment.contentType.startsWith('image/')) {
+                return `
+                    <div>
+                        <img src="data:${attachment.contentType};base64,${attachment.data}" alt="Ticket Attachment" style="max-width: 200px;"/>
+                    </div>
+                `;
+            } else if (attachment.contentType === 'application/pdf') {
+                return `
+                    <div>
+                        <a href="data:${attachment.contentType};base64,${attachment.data}" target="_blank">View PDF</a>
+                    </div>
+                `;
+            }
+            return '';
+        }).join('');
     }
 }

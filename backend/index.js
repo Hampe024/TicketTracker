@@ -16,11 +16,48 @@ const db = new MongoWrapper();
 app.use(cors());
 app.use(bodyParser.json());
 
+
+
+
+const multer = require('multer');
+
+// Set storage to memory (files will be stored in memory buffer, which can be saved directly to MongoDB)
+const storage = multer.memoryStorage();
+
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 5 * 1024 * 1024, // Limit files to 5MB
+        files: 5 // Max number of files
+    },
+    fileFilter: (req, file, cb) => {
+        const filetypes = /jpeg|jpg|png|pdf/;
+        const mimetype = filetypes.test(file.mimetype);
+
+        if (mimetype) {
+            return cb(null, true);
+        } else {
+            cb(new Error('File type not supported'));
+        }
+    }
+}).array('files', 5); // 'files' is the field name for the file input in the form
+
+
+
+
 // START ENDPOITS FOR TICKET
 
-app.post('/ticket', async (req, res) => {
+app.post('/ticket', upload, async (req, res) => {
     try {
         await db.connected;
+
+        const attachments = req.files.map(file => ({
+            filename: file.originalname,
+            contentType: file.mimetype,
+            data: file.buffer // Store file content as Buffer
+        }));
+
+        console.log(req.body)
 
         const newTicket = {
             "time-created": await helpers.getCurrentDate(),
@@ -28,24 +65,26 @@ app.post('/ticket', async (req, res) => {
             "time-closed": "",
             "title": req.body.title,
             "description": req.body.description,
-            "attatchments": {},
+            "attachments": attachments, // Include uploaded files
             "category": req.body.category ? req.body.category : "",
             "status": "recieved",
-            "agent": { 
+            "agent": {
                 "id": null,
                 "name": null
             },
             "actions": "",
             "comment": "",
-            "user": req.body.user
-        }
+            "user": JSON.parse(req.body.user) // Parse user as it's sent as JSON string in FormData
+        };
+
         const result = await db.insertOne('ticket', newTicket);
         res.status(200).json({ success: true, result });
     } catch (error) {
-        console.error(`Error: can't insert ticket:${newTicket} to db \n${error}`);
+        console.error(`Error: can't insert ticket: to db \n${error}`);
         res.status(500).json({ success: false, error: error.message });
     }
 });
+
 
 app.get('/tickets', async (req, res) => {
     try {
