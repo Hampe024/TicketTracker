@@ -36,6 +36,16 @@ export default class Router extends HTMLElement {
                 name: "My Tickets",
                 "img": "icons8-ticket-100.png"
             },
+            "categories": {
+                view: "<categories-view></categories-view>",
+                name: "Category manager",
+                img: "icons8-diversity-100.png",
+            },
+            "account-manager": {
+                view: "<user-manager></user-manager>",
+                name: "User manager",
+                "img": "icons8-add-user-100.png"
+            },
         };
     }
 

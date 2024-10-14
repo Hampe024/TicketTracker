@@ -1,16 +1,11 @@
-import userModel from "../userModel.js";
-
-export default class Login extends HTMLElement {
+export default class Categories extends HTMLElement {
     constructor() {
         super();
-
-        this.userInfo = {};
     }
 
     // connect component
     connectedCallback() {
-        // location.hash = "login-form";
-        this.render();
+        this.render()
     }
 
     makeInput(type, required, name) {
@@ -38,43 +33,35 @@ export default class Login extends HTMLElement {
         const newSubmit = document.createElement("input");
 
         newSubmit.setAttribute("type", "submit");
-        newSubmit.setAttribute("value", "Login");
+        newSubmit.setAttribute("value", "Make category");
         newSubmit.classList.add("button");
         return newSubmit;
     }
 
-    makeError() {
-        const errorBox = document.createElement("div");
-
-        errorBox.id = "loginError";
-        errorBox.innerHTML = `Could not find account`;
-        return errorBox;
-    }
-
-    async render() {
+    render() {
         const form = document.createElement("form");
 
-        form.appendChild(this.makeInputLabel("Email"));
-        form.appendChild(this.makeInput("email", true, "email"));
+        form.appendChild(this.makeInputLabel("Category"));
+        form.appendChild(this.makeInput("name", true, "name"));
         form.appendChild(this.makeSubmit());
 
         form.addEventListener("submit", async (event) => {
             event.preventDefault();
-            const result = await userModel.login(this.userInfo.email);
-            //TODO: add password
-            if (result) {
-                location.hash = "";
-                //TODO: change depending on user type
-                localStorage.setItem("userId", result._id)
-                const accountEvent = new Event('accountUpdate');
-                window.dispatchEvent(accountEvent);
+            if (this.userInfo.role) {
+                const result = await userModel.makeUser(this.userInfo.name, this.userInfo.email, this.userInfo.role);
+                //TODO: add password
+                if (result.acknowledged) {
+                    form.reset();
+                    alert("Account successfully added!");
+                } else {
+                    alert("Could not create account!");
+                }
             } else {
-                document.getElementById("loginError").style.opacity = "1";
+                alert("Please specify role");
             }
+            
         });
 
-        this.appendChild(this.makeError());
         this.appendChild(form);
     }
 }
-

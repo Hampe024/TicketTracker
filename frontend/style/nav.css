@@ -1,5 +1,5 @@
 .bottom-nav {
-    background-color: rgb(91, 91, 91);
+    background-color: rgb(154, 154, 154);
     position: fixed;
     bottom: 0;
     overflow: hidden;
@@ -31,13 +31,14 @@
 .bottom-nav > a > p {
     font-size: 0.8rem;
     text-align: center;
-    color: rgba(160, 160, 160, 0.5);
+    color: black;
+    font-weight: bold;
 }
 
 .bottom-nav > a.vertical-line:not(:first-of-type)::after {
     content: "";
     width: 2px;
-    background: rgba(160, 160, 160, 0.5);
+    background: rgba(0, 0, 0, 0.5);
     margin-left: -2.5rem;
     height: 60%;
     position: absolute;

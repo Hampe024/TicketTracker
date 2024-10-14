@@ -9,6 +9,8 @@ import TicketModal from "./components/ticketModal.js";
 import Account from "./views/account.js";
 import TicketRepository from "./views/ticketRepository.js";
 import TicketsAgent from "./views/ticketsAgent.js";
+import Categories from "./views/categories.js";
+import UserManager from "./views/userManager.js";
 
 customElements.define('router-outlet', Router);
 customElements.define('navigation-outlet', Navigation);
@@ -21,3 +23,5 @@ customElements.define('ticket-modal', TicketModal);
 customElements.define('account-view', Account);
 customElements.define('agent-ticket-view', TicketRepository);
 customElements.define('my-tickets', TicketsAgent);
+customElements.define('categories-view', Categories);
+customElements.define('user-manager', UserManager);

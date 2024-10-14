@@ -30,6 +30,24 @@ const userModel = {
         const result = await response.json();
 
         return result.result;
+    },
+
+    makeUser: async (name, email, role) => {
+        const body = {
+            "name": name,
+            "email": email,
+            "role": role
+        }
+        const response = await fetch(`${userModel.APIURL}user`, {
+            body: JSON.stringify(body),
+            headers: {
+                'content-type': 'application/json'
+            },
+            method: 'POST',
+        });
+        const result = await response.json();
+
+        return result.result;
     }
 
 }
