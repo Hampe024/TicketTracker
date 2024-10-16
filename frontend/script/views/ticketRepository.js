@@ -47,8 +47,6 @@ export default class TicketRepository extends HTMLElement {
         this.renderTicketList();
     }
     
-    
-
     filterAndSortTickets() {
         let filteredTickets = [...this.tickets];
 
@@ -65,8 +63,6 @@ export default class TicketRepository extends HTMLElement {
                         (ticket.user?.id?.toLowerCase() || '').includes(searchTerm);
             });
         }
-
-        
 
         // Filter by status
         if (this.filterOptions.status) {
@@ -100,8 +96,15 @@ export default class TicketRepository extends HTMLElement {
         return new Date(year, month - 1, day, hours, minutes, seconds);
     }
 
-    render() {
+    async render() {
         if (!this.hasRenderedFilters) {
+            const categories = await ticketModel.fetcher("categories");
+            let categoryList = ``;
+
+            categories.forEach(category => {
+                categoryList += `<option value="${category.name}">${category.name}</option>`;
+            });
+
             this.innerHTML = `
                 <h2>All tickets</h2> 
     
@@ -119,8 +122,7 @@ export default class TicketRepository extends HTMLElement {
                         Category:
                         <select name="category">
                             <option value="">All</option>
-                            <option value="network">Network</option>
-                            <option value="software">Software</option>
+                            ${categoryList}
                         </select>
                     </label>
                     <label>

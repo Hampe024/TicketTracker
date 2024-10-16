@@ -169,6 +169,35 @@ app.patch('/ticket/:id', async (req, res) => {
     }
 });
 
+// START ENDPOINTS FOR CATEGORIES
+
+app.get('/categories', async (req, res) => {
+    try {
+        await db.connected;
+        const result = await db.find('category');
+        res.status(200).json({ success: true, result });
+    } catch (error) {
+        console.error(`Error: can't get categories \n${error}`);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.post('/category', async (req, res) => {
+    try {
+        await db.connected;
+
+        console.log(req.body)
+
+        const category = req.body;
+
+        const result = await db.insertOne('category', category);
+        res.status(200).json({ success: true, result });
+    } catch (error) {
+        console.error(`Error: can't create category \n${error}`);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
 // START ENDPOITS FOR USER
 
 app.get('/user', async (req, res) => {
@@ -187,7 +216,7 @@ app.post('/user', async (req, res) => {
     try {
         await db.connected;
 
-        console.log(req.body)
+        // console.log(req.body)
 
         const newUser = {
             "name": req.body.name,

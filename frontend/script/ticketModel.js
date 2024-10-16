@@ -61,8 +61,6 @@ const ticketModel = {
         return result.success;
     },
     
-    
-
     updateTicket: async (ticketId, body) => {
         const response = await fetch(`${ticketModel.APIURL}ticket/${ticketId}`, {
             body: JSON.stringify(body),
@@ -73,6 +71,22 @@ const ticketModel = {
         });
         const result = await response.json();
 
+        return result.success;
+    },
+
+    makeCategory: async(categoryName) => {
+        const category = {
+            "name": categoryName
+        };
+
+        const response = await fetch(`${ticketModel.APIURL}category`, {
+            body: JSON.stringify(category),
+            headers: {
+                'content-type': 'application/json'
+            },
+            method: 'POST',
+        });
+        const result = await response.json();
         return result.success;
     }
 

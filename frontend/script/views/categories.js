@@ -1,6 +1,10 @@
+import ticketModel from "../ticketModel.js";
+
 export default class Categories extends HTMLElement {
     constructor() {
         super();
+
+        this.category = "";
     }
 
     // connect component
@@ -15,7 +19,7 @@ export default class Categories extends HTMLElement {
         newInput.required = required;
         newInput.classList.add("input");
         newInput.addEventListener("input", (event) => {
-            this.userInfo[name] = event.target.value;
+            this.category = event.target.value;
         });
 
         return newInput;
@@ -47,19 +51,13 @@ export default class Categories extends HTMLElement {
 
         form.addEventListener("submit", async (event) => {
             event.preventDefault();
-            if (this.userInfo.role) {
-                const result = await userModel.makeUser(this.userInfo.name, this.userInfo.email, this.userInfo.role);
-                //TODO: add password
-                if (result.acknowledged) {
-                    form.reset();
-                    alert("Account successfully added!");
-                } else {
-                    alert("Could not create account!");
-                }
+            const result = await ticketModel.makeCategory(this.category);
+            if (result) {
+                form.reset();
+                alert("Category successfully added!");
             } else {
-                alert("Please specify role");
+                alert("Could not create category!");
             }
-            
         });
 
         this.appendChild(form);

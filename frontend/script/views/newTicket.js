@@ -1,4 +1,5 @@
 import ticketModel from "../ticketModel.js";
+import userModel from "../userModel.js";
 
 export default class NewTicket extends HTMLElement {
     constructor() {
@@ -29,11 +30,17 @@ export default class NewTicket extends HTMLElement {
     
         newSelect.required = required;
         newSelect.classList.add("select");
-    
+
+        const defaultOption = document.createElement("option");
+        defaultOption.textContent = "Category";
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        newSelect.appendChild(defaultOption);
+
         options.forEach(optionValue => {
             const option = document.createElement("option");
-            option.value = optionValue;
-            option.textContent = optionValue;
+            option.value = optionValue.name;
+            option.textContent = optionValue.name;
             newSelect.appendChild(option);
         });
     
@@ -85,6 +92,7 @@ export default class NewTicket extends HTMLElement {
     
 
     async render() {
+        const categories = await ticketModel.fetcher("categories");
         const form = document.createElement("form");
     
         form.setAttribute("enctype", "multipart/form-data");
@@ -96,7 +104,7 @@ export default class NewTicket extends HTMLElement {
         form.appendChild(this.makeInput("textarea", true, "description"));
     
         form.appendChild(this.makeInputLabel("Category"));
-        form.appendChild(this.makeSelect(["Unknown", "Database", "Network", "Account", "Security"], false, "category"));
+        form.appendChild(this.makeSelect(categories, false, "category"));
     
         form.appendChild(this.makeInputLabel("Attachments (up to 4 images/PDFs)"));
         form.appendChild(this.makeFileInput("attachments"));
