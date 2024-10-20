@@ -7,7 +7,7 @@ class MongoWrapper {
     constructor() {
         this.client = null;
         this.connected = this.connect();
-        this.db = "testdb7";
+        this.db = "testdb8";
     }
 
     async connect() {
@@ -52,7 +52,7 @@ class MongoWrapper {
     async findOne(collectionName, query) {
         if (query.hasOwnProperty('_id')) {
             query._id = new ObjectId(query._id);
-          }
+        }
         const collection = await this.getCollection(collectionName);
         return collection.findOne(query);
     }

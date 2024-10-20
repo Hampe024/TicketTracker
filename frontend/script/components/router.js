@@ -26,6 +26,10 @@ export default class Router extends HTMLElement {
                 view: "<login-form></login-form>",
                 hidden: true,
             },
+            "register-form": {
+                view: "<register-form></register-form>",
+                hidden: true,
+            },
             "ticketRepository": {
                 view: "<agent-ticket-view></agent-ticket-view>",
                 name: "Ticket repository",
@@ -75,7 +79,7 @@ export default class Router extends HTMLElement {
         const userId = localStorage.getItem("userId");
 
         // if not logged in
-        if (!userId) {
+        if (!userId && this.currentRoute !== "register-form") {
             location.hash = "login-form";
         } 
         // if current # is in routes view it, otherwise 404

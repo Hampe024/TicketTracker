@@ -51,17 +51,40 @@ export default class Login extends HTMLElement {
         return errorBox;
     }
 
+    makeRegister() {
+        const registerBox = document.createElement("div");
+
+        registerBox.classList.add("register-box");
+
+        const registerText = document.createElement("p");
+
+        registerText.innerHTML = "Dont have an account?";
+
+        const registerButton = document.createElement("button");
+
+        registerButton.classList.add("button");
+        registerButton.innerHTML = "Create account";
+        registerButton.addEventListener("click", () => {
+            location.hash = "register-form";
+        });
+        registerBox.appendChild(registerText);
+        registerBox.appendChild(registerButton);
+        return registerBox;
+    }
+
     async render() {
         const form = document.createElement("form");
 
         form.appendChild(this.makeInputLabel("Email"));
         form.appendChild(this.makeInput("email", true, "email"));
+        form.appendChild(this.makeInputLabel("Password"));
+        form.appendChild(this.makeInput("password", true, "password"));
         form.appendChild(this.makeSubmit());
 
         form.addEventListener("submit", async (event) => {
             event.preventDefault();
-            const result = await userModel.login(this.userInfo.email);
-            //TODO: add password
+            const result = await userModel.login(this.userInfo.email, this.userInfo.password);
+
             if (result) {
                 location.hash = "";
                 //TODO: change depending on user type
@@ -75,6 +98,7 @@ export default class Login extends HTMLElement {
 
         this.appendChild(this.makeError());
         this.appendChild(form);
+        this.appendChild(this.makeRegister());
     }
 }
 

@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const formidable = require('formidable');
+const bcrypt = require('bcrypt');
 
 require('dotenv').config({ path: '../.env' });
 const { MongoWrapper } = require('./mongowrapper');
@@ -202,13 +203,39 @@ app.post('/category', async (req, res) => {
 
 app.get('/user', async (req, res) => {
     try {
-        const query = JSON.parse(req.query.query);
         await db.connected;
+        const query = JSON.parse(req.query.query);
         const result = await db.findOne('user', query);
+
         res.status(200).json({ success: true, result });
     } catch (error) {
         console.error(`Error: can't get users \n${error}`);
         res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.get('/user/login', async (req, res) => {
+    try {
+        await db.connected;
+
+        const query = JSON.parse(req.query.email);
+        const result = await db.findOne('user', query);
+
+        if (!result) {
+            return res.status(401).json({ success: false, message: 'Invalid credentials' });
+        }
+
+        const isMatch = await bcrypt.compare(req.query.password, result.password);
+
+        if (!isMatch) {
+            console.error(`Login failed: Incorrect password(${req.query.password}) for email ${req.query.email}`);
+            return res.status(401).json({ success: false, message: 'Invalid credentials' });
+        }
+
+        res.status(200).json({ success: true, result });
+    } catch (error) {
+        console.error(`Error: can't login \n${error}`);
+        res.status(500).json({ success: false, error: 'An error occurred during login' });
     }
 });
 
@@ -217,11 +244,14 @@ app.post('/user', async (req, res) => {
         await db.connected;
 
         // console.log(req.body)
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
         const newUser = {
             "name": req.body.name,
             "email": req.body.email,
-            "role": req.body.role, // "customer" or "agent"
+            "role": req.body.role, // "customer" or "agent" or "admin"
+            "password": hashedPassword,
+            "firstTimeLogIn": req.body.firstTimeLogIn
         }
         const result = await db.insertOne('user', newUser);
         res.status(200).json({ success: true, result });

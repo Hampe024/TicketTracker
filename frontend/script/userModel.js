@@ -24,19 +24,21 @@ const userModel = {
         return user.role
     },
 
-    login: async (email) => {
+    login: async (email, password="") => {
         const query = JSON.stringify({ email: email });
-        const response = await fetch(`${userModel.APIURL}user/?query=${encodeURIComponent(query)}`);
+        const response = await fetch(`${userModel.APIURL}user/login/?email=${encodeURIComponent(query)}&password=${password}`);
         const result = await response.json();
 
         return result.result;
     },
 
-    makeUser: async (name, email, role) => {
+    makeUser: async (name, email, role, password, firstTimeLogIn) => {
         const body = {
             "name": name,
             "email": email,
-            "role": role
+            "role": role,
+            "password": password,
+            "firstTimeLogIn": firstTimeLogIn
         }
         const response = await fetch(`${userModel.APIURL}user`, {
             body: JSON.stringify(body),

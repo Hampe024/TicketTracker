@@ -11,6 +11,7 @@ import TicketRepository from "./views/ticketRepository.js";
 import TicketsAgent from "./views/ticketsAgent.js";
 import Categories from "./views/categories.js";
 import UserManager from "./views/userManager.js";
+import Register from "./views/register.js";
 
 customElements.define('router-outlet', Router);
 customElements.define('navigation-outlet', Navigation);
@@ -25,3 +26,4 @@ customElements.define('agent-ticket-view', TicketRepository);
 customElements.define('my-tickets', TicketsAgent);
 customElements.define('categories-view', Categories);
 customElements.define('user-manager', UserManager);
+customElements.define('register-form', Register);

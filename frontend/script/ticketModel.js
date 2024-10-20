@@ -1,5 +1,3 @@
-import userModel from "./userModel.js";
-
 const ticketModel = {
     APIURL: "http://localhost:3000/",  
 
