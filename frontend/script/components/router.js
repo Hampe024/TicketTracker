@@ -30,6 +30,10 @@ export default class Router extends HTMLElement {
                 view: "<register-form></register-form>",
                 hidden: true,
             },
+            "ChangePassword": {
+                view: "<set-password></set-password>",
+                hidden: true,
+            },
             "ticketRepository": {
                 view: "<agent-ticket-view></agent-ticket-view>",
                 name: "Ticket repository",

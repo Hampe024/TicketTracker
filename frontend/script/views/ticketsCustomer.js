@@ -11,6 +11,9 @@ export default class TicketsCustomer extends HTMLElement {
     async connectedCallback() {
         const user = await userModel.getUserById(localStorage.getItem("userId"));
         // console.log(user)
+        if (!user) {
+            return;
+        }
         this.tickets = await ticketModel.getTicketByUserId(user._id, user.email);
         this.render();
     }

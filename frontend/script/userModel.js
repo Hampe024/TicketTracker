@@ -32,13 +32,13 @@ const userModel = {
         return result.result;
     },
 
-    makeUser: async (name, email, role, password, firstTimeLogIn) => {
+    makeUser: async (name, email, role, password, firstTimeLogin) => {
         const body = {
             "name": name,
             "email": email,
             "role": role,
             "password": password,
-            "firstTimeLogIn": firstTimeLogIn
+            "firstTimeLogin": firstTimeLogin
         }
         const response = await fetch(`${userModel.APIURL}user`, {
             body: JSON.stringify(body),
@@ -50,6 +50,23 @@ const userModel = {
         const result = await response.json();
 
         return result.result;
+    },
+
+    ChangePassword: async (userId, password) => {
+        const body = {
+            "password": password,
+            "firstTimeLogin": false
+        };
+        const response = await fetch(`${userModel.APIURL}user/${userId}`, {
+            body: JSON.stringify(body),
+            headers: {
+                'content-type': 'application/json'
+            },
+            method: 'PATCH'
+        });
+        const result = await response.json();
+
+        return result.success;
     }
 
 }

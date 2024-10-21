@@ -251,13 +251,38 @@ app.post('/user', async (req, res) => {
             "email": req.body.email,
             "role": req.body.role, // "customer" or "agent" or "admin"
             "password": hashedPassword,
-            "firstTimeLogIn": req.body.firstTimeLogIn
+            "firstTimeLogin": req.body.firstTimeLogin
         }
         const result = await db.insertOne('user', newUser);
         res.status(200).json({ success: true, result });
     } catch (error) {
         console.error(`Error: can't create user:${newUser} \n${error}`);
         res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.patch('/user/:id', async (req, res) => {
+    try {
+        await db.connected;
+
+        const userId = req.params.id;
+        const updatedFields = req.body;
+        if (updatedFields.hasOwnProperty('password')) {
+            const hashedPassword = await bcrypt.hash(updatedFields.password, 10);
+            updatedFields.password = hashedPassword;
+        }
+
+        const result = await db.updateOne("user", userId, updatedFields)
+
+        if (result.matchedCount > 0) {
+            res.status(200).json({ success: true, result });
+        } else {
+            res.status(404).json({ success: false, message: 'could not find user' });
+        }
+        
+    } catch (error) {
+        console.error(`Error updating user: ${error}`);
+        res.status(500).json({ success: false, message: 'could not update user' });
     }
 });
 

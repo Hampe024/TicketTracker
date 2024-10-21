@@ -90,7 +90,7 @@ export default class UserManager extends HTMLElement {
         form.addEventListener("submit", async (event) => {
             event.preventDefault();
             if (this.userInfo.role) {
-                const result = await userModel.makeUser(this.userInfo.name, this.userInfo.email, this.userInfo.role, "", true);
+                const result = await userModel.makeUser(this.userInfo.name, this.userInfo.email, this.userInfo.role, "password", true);
                 //TODO: add password
                 if (result.acknowledged) {
                     form.reset();

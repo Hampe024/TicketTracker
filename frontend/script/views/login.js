@@ -86,11 +86,16 @@ export default class Login extends HTMLElement {
             const result = await userModel.login(this.userInfo.email, this.userInfo.password);
 
             if (result) {
-                location.hash = "";
-                //TODO: change depending on user type
                 localStorage.setItem("userId", result._id)
                 const accountEvent = new Event('accountUpdate');
                 window.dispatchEvent(accountEvent);
+                console.log("HEJE")
+                if (result.firstTimeLogin) {
+                    location.hash = "ChangePassword";
+                } else {
+                    location.hash = "";
+                    //TODO: change depending on user type
+                }
             } else {
                 document.getElementById("loginError").style.opacity = "1";
             }
