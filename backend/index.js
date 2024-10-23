@@ -73,8 +73,7 @@ app.post('/ticket', upload, async (req, res) => {
                 "id": null,
                 "name": null
             },
-            "actions": "",
-            "comment": "",
+            "comment": [],
             "user": JSON.parse(req.body.user) // Parse user as it's sent as JSON string in FormData
         };
 
@@ -341,12 +340,21 @@ app.post('/recieve-email', async (req, res) => {
                 }
             });
 
-            console.log(fields)
-            console.log(fields.reply_plain[0].split('\r\n')[0].trim())
+            // console.log(fields)
+            // console.log(fields.reply_plain[0].split('\r\n')[0].trim())
+
+            const ticket = await db.findOne("ticket", {"_id": ticketId});
+            const oldComments = ticket.comment;
+            const newComment = {
+                "time": await helpers.getCurrentDate(),
+                "msg": fields.reply_plain[0].split('\r\n')[0].trim(),
+                "sender": "customer"
+            }
+            const totComments = [...oldComments, newComment];
 
             const updatedFields = {
                 "time-updated": await helpers.getCurrentDate(),
-                "comment": fields.reply_plain[0].split('\r\n')[0].trim()
+                "comment": totComments
             }
 
             const result = await db.updateOne("ticket", ticketId, updatedFields)
@@ -356,27 +364,74 @@ app.post('/recieve-email', async (req, res) => {
             const subject = fields['headers[subject]'][0];
             const plainContent = fields.plain[0];
 
-            const newTicket = {
-                "time-created": await helpers.getCurrentDate(),
-                "time-updated": "",
-                "time-closed": "",
-                "title": subject,
-                "description": plainContent,
-                "attatchments": {},
-                "category": "",
-                "status": "recieved",
-                "agent": { 
-                    "id": null,
-                    "name": null
-                },
-                "actions": "",
-                "comment": "",
-                "user": {
-                    "id": null,
-                    "name": null,
-                    "email": sender
+            const bthDomainPattern = /@bth\.se$/;
+            const studentBthPattern = /@student\.bth\.se$/;
+            const gmailPattern = /@gmail\.com$/;
+
+            let newTicket = {};
+
+            if (bthDomainPattern.test(sender) || studentBthPattern.test(sender) || gmailPattern.test(sender)) {
+                console.log("is either bth or gmail domain")
+                try {
+                    const hashedPassword = await bcrypt.hash("password", 10);
+                    const name = fields['headers[from]'][0].split(' <')[0];
+            
+                    const newUser = {
+                        "name": name,
+                        "email": sender,
+                        "role": "customer",
+                        "password": hashedPassword,
+                        "firstTimeLogin": true
+                    }
+                    const userResult = await db.insertOne('user', newUser);
+                    const user = await db.findOne('user', {"_id": userResult.insertedId});
+                    console.log(user);
+
+                    newTicket = {
+                        "time-created": await helpers.getCurrentDate(),
+                        "time-updated": "",
+                        "time-closed": "",
+                        "title": subject,
+                        "description": plainContent,
+                        "attatchments": {},
+                        "category": "",
+                        "status": "recieved",
+                        "agent": { 
+                            "id": null,
+                            "name": null
+                        },
+                        "comment": [],
+                        "user": {
+                            "id": user._id,
+                            "name": user.name,
+                            "email": user.email
+                        }
+                    };
+                } catch (error) {
+                    console.error(`Error: can't create user:${newUser} \n${error}`);
                 }
-            };
+            } else {
+                newTicket = {
+                    "time-created": await helpers.getCurrentDate(),
+                    "time-updated": "",
+                    "time-closed": "",
+                    "title": subject,
+                    "description": plainContent,
+                    "attatchments": {},
+                    "category": "",
+                    "status": "recieved",
+                    "agent": { 
+                        "id": null,
+                        "name": null
+                    },
+                    "comment": [],
+                    "user": {
+                        "id": null,
+                        "name": null,
+                        "email": sender
+                    }
+                };
+            }
 
             const result = await db.insertOne('ticket', newTicket);
             res.status(200).json({ success: true, result });
