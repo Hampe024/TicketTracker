@@ -19,12 +19,6 @@ export default class TicketModal extends HTMLElement {
         this.render();
         const editableAttr = this.getAttribute('editable');
         this.editable = editableAttr === 'true'; // Convert the string to boolean
-
-        // Add close functionality
-        this.querySelector('.modal-close').addEventListener('click', () => {
-            this.remove();
-            document.querySelector('.modal-background').remove();
-        });
     }
 
     async makeAssignBtn(ticket) {
@@ -49,15 +43,29 @@ export default class TicketModal extends HTMLElement {
         const user = await userModel.getUserById(localStorage.getItem("userId"));
         statusBtnElem.addEventListener('click', async () => {
             statusBtnElem.remove();
-            await ticketModel.updateTicket(ticket._id, { status: "Closed"});
-            document.getElementById("ticketStatus").innerHTML = "Closed";
+            if (ticket.status === "In progress") {
+                await ticketModel.updateTicket(ticket._id, { status: "Closed"});
+                document.getElementById("ticketStatus").innerHTML = "Closed";
+            } else if (ticket.status === "Closed") {
+                await ticketModel.updateTicket(ticket._id, { status: "In progress"});
+                document.getElementById("ticketStatus").innerHTML = "In progress";
+            }
+            
         });
-        if (ticket.status === "In progress" && this.editable) {
+        if ((ticket.status === "In progress" || ticket.status === "Closed") && this.editable) {
             statusBtnElem.style.display = "inline-block";
         }
     }
 
+    makeCloseBtn() {
+        this.querySelector('.modal-close').addEventListener('click', () => {
+            this.remove();
+            document.querySelector('.modal-background').remove();
+        });
+    }
+
     async render() {
+        console.log(this.editable)
         const ticket = this.ticket;
         const background = document.createElement('div');
         background.classList.add('modal-background');
@@ -68,12 +76,10 @@ export default class TicketModal extends HTMLElement {
             <button class="modal-close">X</button>
             <h2>${ticket.title}</h2>
             <p><strong>Description:</strong> ${ticket.description} </p>
-            <p><strong>Status:</strong> <span id="ticketStatus">${ticket.status}</span> <span class="status-btn">Close</span> </p>
+            <p><strong>Status:</strong> <span id="ticketStatus">${ticket.status}</span> <span class="status-btn">${ticket.status === "In progress" ? "Close" : "Re-open"}</span> </p>
             <p><span><strong>Agent:</strong> <span id="ticketAgent">${ticket.agent.name || "Unassigned"}</span></span> <span class="assign-btn">Claim</span> </p>
             <p><span><strong>Customer:</strong> ${ticket.user.name}</span></p>
             <p><strong>Category:</strong> ${ticket.category || "Unassigned"} </p>
-            <p><strong>Actions taken:</strong> ${ticket.actions || "Nothing so far!"} </p>
-            <p><strong>Comment:</strong> ${ticket.comment} </p>
             <p><strong>Created:</strong> ${ticket['time-created']} </p>
             <p><strong>Updated:</strong> ${ticket['time-updated'] === "" ? "N/A" : ticket['time-updated']} </p>
             <p><strong>Closed:</strong> ${ticket['time-closed'] === "" ? "N/A" : ticket['time-closed']} </p>
@@ -81,8 +87,17 @@ export default class TicketModal extends HTMLElement {
                 <h3>Attachments:</h3>
                 ${this.renderAttachments(ticket.attachments)}
             </div>
+            <p>
+                <h3>Comment:</h3>
+                <div class="comment-box">
+                    ${await this.renderComments(ticket.comment)}
+                </div>
+                ${this.editable ? `<add-comment ticket='${JSON.stringify(ticket)}'></add-comment>` : ""}
+                
+            </p>
         `;
 
+        this.makeCloseBtn();
         await this.makeAssignBtn(ticket);
         await this.makeUpdateStatusBtn(ticket);
     }
@@ -111,4 +126,42 @@ export default class TicketModal extends HTMLElement {
             return '';
         }).join('');
     }
+
+    async renderComments(comments) {
+        console.log(comments)
+        if (!comments || comments.length === 0) {
+            return '<p>No comments found.</p>';
+        }
+
+        return comments.map(comment => {
+            if (comment.sender === "customer") {
+                return `
+                    <div class="box-me">
+                        <div class="comment-msg comment-msg-me">
+                            <div class="comment-msg-info">
+                                ${comment.time}
+                            </div>
+                            <div class="comment-msg-msg">
+                                ${comment.msg}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            return `
+                <div>
+                    <div class="comment-msg comment-msg-other">
+                        <div class="comment-msg-info">
+                            ${comment.time}
+                        </div>
+                        <div class="comment-msg-msg">
+                            ${comment.msg}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    
 }

@@ -13,6 +13,7 @@ import Categories from "./views/categories.js";
 import UserManager from "./views/userManager.js";
 import Register from "./views/register.js";
 import SetPassword from "./views/setPassword.js";
+import AddComment from "./components/addComment.js";
 
 customElements.define('router-outlet', Router);
 customElements.define('navigation-outlet', Navigation);
@@ -29,3 +30,4 @@ customElements.define('categories-view', Categories);
 customElements.define('user-manager', UserManager);
 customElements.define('register-form', Register);
 customElements.define('set-password', SetPassword);
+customElements.define('add-comment', AddComment);

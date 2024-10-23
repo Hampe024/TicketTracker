@@ -1,3 +1,5 @@
+import userModel from "./userModel.js";
+
 const ticketModel = {
     APIURL: "http://localhost:3000/",  
 
@@ -15,7 +17,7 @@ const ticketModel = {
     },
 
     getTicketByAgentId: async (userId) => {
-        const dataPoint = `tickets/agent/?agentId=${encodeURIComponent(userId)}&ticketStatus=In progress`;
+        const dataPoint = `tickets/agent/?agentId=${encodeURIComponent(userId)}`;
         const result = await ticketModel.fetcher(dataPoint)
         return result;
     },
@@ -85,6 +87,23 @@ const ticketModel = {
             method: 'POST',
         });
         const result = await response.json();
+        return result.success;
+    },
+
+    addComment: async(ticketId, comments) => {
+        const body = {
+            "comment": comments
+        }
+        console.log(body)
+        const response = await fetch(`${ticketModel.APIURL}ticket/${ticketId}`, {
+            body: JSON.stringify(body),
+            headers: {
+                'content-type': 'application/json'
+            },
+            method: 'PATCH'
+        });
+        const result = await response.json();
+
         return result.success;
     }
 

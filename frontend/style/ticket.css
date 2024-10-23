@@ -119,3 +119,55 @@ ticket-modal {
 .pdf-link a {
     color: #e7e7e7;
 }
+
+.comment-box {
+    background: #eaeaea;
+    border-radius: 6px;
+    padding: 0.3rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.comment-msg {
+    font-size: 20px;
+    width: fit-content;
+    max-width: 90%;
+    overflow-wrap: break-word;
+    word-break: break-word; 
+    overflow: auto;
+    padding: 0px 10px 5px 5px;
+    margin-bottom: 0px;
+}
+
+.comment-msg-me {
+    float: right;
+}
+
+.comment-msg-me > .comment-msg-msg {
+    text-align: right;
+    background-color: #1DA1F2;
+    border-radius: 10px 10px 0 10px;
+    width: fit-content;
+    float: right;
+}
+
+.box-me {
+    float: right;
+}
+
+.comment-msg-other > .comment-msg-msg {
+    text-align: left;
+    background-color: #8a9dad;
+    border-radius: 10px 10px 10px 0;
+    width: fit-content;
+}
+
+.comment-msg-msg {
+    padding: 5px;
+}
+
+.comment-msg-info {
+    font-size: 0.8rem;
+}
