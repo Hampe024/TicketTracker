@@ -21,7 +21,9 @@
     width: fit-content;
     height: fit-content;
     padding: 0.2rem;
-    background-color: #d568e6;
+    color: #e7e7e7;
+    background-color: rgb(94, 94, 94);
+    background-image: linear-gradient(rgb(94, 94, 94), rgb(70, 70, 70));
     border-radius: 3px;
 }
 

@@ -41,6 +41,7 @@ export default class AddComment extends HTMLElement {
         newSubmit.setAttribute("type", "submit");
         newSubmit.setAttribute("value", "Reply");
         newSubmit.classList.add("button");
+        newSubmit.classList.add("msg-btb");
         return newSubmit;
     }
 

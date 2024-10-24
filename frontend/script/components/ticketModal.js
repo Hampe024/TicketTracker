@@ -4,6 +4,7 @@ import ticketModel from "../ticketModel.js";
 export default class TicketModal extends HTMLElement {
     constructor() {
         super();
+        this.ticketinfo = {};
         this.editable = false;
     }
 
@@ -57,6 +58,48 @@ export default class TicketModal extends HTMLElement {
         }
     }
 
+    async makeAddCategoryBtn(ticket) {
+        const categoryBox = this.querySelector('.category-btn');
+        categoryBox.style.display = "none";
+
+        const categorySelect = document.createElement("select");
+
+        const defaultOption = document.createElement("option");
+        defaultOption.textContent = "Category";
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        categorySelect.appendChild(defaultOption);
+
+        const categories = await ticketModel.fetcher("categories");
+
+        categories.forEach(optionValue => {
+            const option = document.createElement("option");
+            option.value = optionValue.name;
+            option.textContent = optionValue.name;
+            categorySelect.appendChild(option);
+        });
+
+        categorySelect.addEventListener("change", (event) => {
+            this.ticketinfo["category"] = event.target.value;
+        });
+
+        const setCategoryBtn = document.createElement("button");
+
+        setCategoryBtn.innerHTML = "Add";
+        setCategoryBtn.style.marginLeft = "5px";
+        setCategoryBtn.addEventListener('click', async () => {
+            categoryBox.remove();
+
+            await ticketModel.updateTicket(ticket._id, { category: this.ticketinfo["category"]});
+        });
+        if (!ticket.category && this.editable) {
+            categoryBox.style.display = "inline-block";
+        }
+
+        categoryBox.appendChild(categorySelect);
+        categoryBox.appendChild(setCategoryBtn);
+    }
+
     makeCloseBtn() {
         this.querySelector('.modal-close').addEventListener('click', () => {
             this.remove();
@@ -65,7 +108,8 @@ export default class TicketModal extends HTMLElement {
     }
 
     async render() {
-        console.log(this.editable)
+        // console.log(this.editable)
+        const user = await userModel.getUserById(localStorage.getItem("userId"));
         const ticket = this.ticket;
         const background = document.createElement('div');
         background.classList.add('modal-background');
@@ -76,10 +120,10 @@ export default class TicketModal extends HTMLElement {
             <button class="modal-close">X</button>
             <h2>${ticket.title}</h2>
             <p><strong>Description:</strong> ${ticket.description} </p>
-            <p><strong>Status:</strong> <span id="ticketStatus">${ticket.status}</span> <span class="status-btn">${ticket.status === "In progress" ? "Close" : "Re-open"}</span> </p>
+            <p><strong>Status:</strong> <span id="ticketStatus">${ticket.status} </span> <span class="status-btn">${ticket.status === "In progress" ? "Close" : "Re-open"}</span> </p>
             <p><span><strong>Agent:</strong> <span id="ticketAgent">${ticket.agent.name || "Unassigned"}</span></span> <span class="assign-btn">Claim</span> </p>
             <p><span><strong>Customer:</strong> ${ticket.user.name}</span></p>
-            <p><strong>Category:</strong> ${ticket.category || "Unassigned"} </p>
+            <p><span><strong>Category:</strong> ${ticket.category || "Unassigned"} </span> <span class="category-btn"></span> </p>
             <p><strong>Created:</strong> ${ticket['time-created']} </p>
             <p><strong>Updated:</strong> ${ticket['time-updated'] === "" ? "N/A" : ticket['time-updated']} </p>
             <p><strong>Closed:</strong> ${ticket['time-closed'] === "" ? "N/A" : ticket['time-closed']} </p>
@@ -92,12 +136,13 @@ export default class TicketModal extends HTMLElement {
                 <div class="comment-box">
                     ${await this.renderComments(ticket.comment)}
                 </div>
-                ${this.editable ? `<add-comment ticket='${JSON.stringify(ticket)}'></add-comment>` : ""}
+                ${(this.editable || user.role === "customer") ? `<add-comment ticket='${JSON.stringify(ticket)}'></add-comment>` : ""}
                 
             </p>
         `;
 
         this.makeCloseBtn();
+        await this.makeAddCategoryBtn(ticket);
         await this.makeAssignBtn(ticket);
         await this.makeUpdateStatusBtn(ticket);
     }
@@ -112,7 +157,7 @@ export default class TicketModal extends HTMLElement {
                 return `
                     <div>
                         <a href="data:${attachment.contentType};base64,${attachment.data}" target="_blank">
-                            <img src="data:${attachment.contentType};base64,${attachment.data}" alt="Ticket Attachment" style="max-width: 200px;"/>
+                            <img src="data:${attachment.contentType};base64,${attachment.data}" alt="Ticket Attachment""/>
                         </a>
                     </div>
                 `;
@@ -162,6 +207,4 @@ export default class TicketModal extends HTMLElement {
             `;
         }).join('');
     }
-
-    
 }
