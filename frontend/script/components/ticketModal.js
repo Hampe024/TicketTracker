@@ -136,7 +136,7 @@ export default class TicketModal extends HTMLElement {
                 <div class="comment-box">
                     ${await this.renderComments(ticket.comment)}
                 </div>
-                ${(this.editable || user.role === "customer") ? `<add-comment ticket='${JSON.stringify(ticket)}'></add-comment>` : ""}
+                ${(this.editable || user.role == "customer") ? `<add-comment ticket='${JSON.stringify(ticket)}'></add-comment>` : ""}
                 
             </p>
         `;
