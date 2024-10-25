@@ -113,6 +113,8 @@ ticket-modal {
     background-color: rgb(94, 94, 94);
     background-image: linear-gradient(rgb(94, 94, 94), rgb(70, 70, 70));
     border-radius: 15px;
+    height: 70px;
+    font-size: 1.5rem;
 }
 
 .pdf-link a {
