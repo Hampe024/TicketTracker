@@ -31,9 +31,9 @@ export default class Account extends HTMLElement {
 
     render() {
         this.innerHTML = `
-            <h2>Your account</h2>
-            ${this.user.name} <br>
-            ${this.user.email}
+            <h1>Your account</h1>
+            <h3>${this.user.name}</h3>
+            <h4>${this.user.email}</h4>
         `;
         this.appendChild(this.makeLogoutBtn());
     }
