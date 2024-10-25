@@ -54,9 +54,9 @@ export default class Categories extends HTMLElement {
             const result = await ticketModel.makeCategory(this.category);
             if (result) {
                 form.reset();
-                alert("Category successfully added!");
+                // alert("Category successfully added!");
             } else {
-                alert("Could not create category!");
+                // alert("Could not create category!");
             }
         });
 
