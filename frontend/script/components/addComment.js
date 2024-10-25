@@ -57,7 +57,7 @@ export default class AddComment extends HTMLElement {
     }
 
     render() {
-        console.log(this.ticket)
+        // console.log(this.ticket)
         const form = document.createElement("form");
 
         form.appendChild(this.makeInput("text", true, "text"));
@@ -66,7 +66,7 @@ export default class AddComment extends HTMLElement {
         form.addEventListener("submit", async (event) => {
             event.preventDefault();
             const user = await userModel.getUserById(localStorage.getItem("userId"));
-            console.log(user)
+            // console.log(user)
             const newComment = {
                 "time": await this.getCurrentDate(),
                 "msg": this.userInfo.text,
