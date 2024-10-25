@@ -156,7 +156,7 @@ app.patch('/ticket/:id', async (req, res) => {
             // res.json({ success: true, message: 'Ticket fields updated successfully' });
             const ticket = await db.findOne("ticket", {_id: ticketId});
             const email = ticket.user.email;
-            const subject = `One of your tickets has been updated`;
+            const subject = `Your ticket '${ticket.title}' has had an update`;
             const text = `Hello! Ticket '${ticketId}' has had an update, login to see the change`;
             sendEmail(res, email, subject, text);
         } else {
@@ -341,13 +341,15 @@ app.post('/recieve-email', async (req, res) => {
             });
 
             // console.log(fields)
-            // console.log(fields.reply_plain[0].split('\r\n')[0].trim())
+            // console.log(typeof(fields.reply_plain[0]))
+            // console.log(fields.reply_plain[0].split('\n')[0].trim())
 
             const ticket = await db.findOne("ticket", {"_id": ticketId});
             const oldComments = ticket.comment;
+            const commentText = fields.reply_plain[0].split('\n')[0].trim();
             const newComment = {
                 "time": await helpers.getCurrentDate(),
-                "msg": fields.reply_plain[0].split('\r\n')[0].trim(),
+                "msg": commentText,
                 "sender": "customer"
             }
             const totComments = [...oldComments, newComment];
@@ -407,6 +409,10 @@ app.post('/recieve-email', async (req, res) => {
                             "email": user.email
                         }
                     };
+                    const result = await db.insertOne('ticket', newTicket);
+                    const emailSubject = "Your ticket has been submitted";
+                    const emailText = "Thank you for submitting a ticket!\n\nYou will get updated to this email when the ticket gets updated.\n\nIf you did not have an account one has been created for you, log in with this email and the password 'password', there you will be promted to change the password.";
+                    sendEmail(res, user.email, emailSubject, emailText);
                 } catch (error) {
                     console.error(`Error: can't create user:${newUser} \n${error}`);
                 }
@@ -431,10 +437,11 @@ app.post('/recieve-email', async (req, res) => {
                         "email": sender
                     }
                 };
+                const result = await db.insertOne('ticket', newTicket);
+                res.status(200).json({ success: true, result });
             }
 
-            const result = await db.insertOne('ticket', newTicket);
-            res.status(200).json({ success: true, result });
+            
         }
 
     } catch (error) {
