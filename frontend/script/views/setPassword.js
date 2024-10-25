@@ -56,7 +56,7 @@ export default class SetPassword extends HTMLElement {
             const result = await userModel.ChangePassword(userId, this.userInfo.password);
 
             if (result) {
-                alert("Password changed");
+                // alert("Password changed");
                 location.hash = "login-form";
             }
         });

@@ -94,12 +94,13 @@ export default class UserManager extends HTMLElement {
                 //TODO: add password
                 if (result.acknowledged) {
                     form.reset();
-                    alert("Account successfully added!");
+                    // alert("Account successfully added!");
                 } else {
-                    alert("Could not create account!");
+                    // alert("Could not create account!");
                 }
             } else {
                 alert("Please specify role");
+                console.log("Please specify role")
             }
             
         });
