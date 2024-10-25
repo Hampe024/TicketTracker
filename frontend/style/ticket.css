@@ -32,10 +32,6 @@ single-ticket span:nth-of-type(2n) {
     text-align: right;
 }
 
-single-ticket span:last-of-type {
-    /* grid-column: 1 / 5; */
-}
-
 .limited-text {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -97,9 +93,6 @@ ticket-modal {
     display: grid;
     grid-template-columns: 100%;
     grid-gap: 0.5rem;
-}
-
-.attachments h3 {
 }
 
 .attachments div img {
