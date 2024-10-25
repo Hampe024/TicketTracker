@@ -89,12 +89,16 @@ export default class Login extends HTMLElement {
                 localStorage.setItem("userId", result._id)
                 const accountEvent = new Event('accountUpdate');
                 window.dispatchEvent(accountEvent);
-                console.log("HEJE")
                 if (result.firstTimeLogin) {
                     location.hash = "ChangePassword";
                 } else {
-                    location.hash = "";
-                    //TODO: change depending on user type
+                    if (result.role == "admin") {
+                        location.hash = "categories";
+                    } else if (result.role == "agent") {
+                        location.hash = "ticketRepository";
+                    } else {
+                        location.hash = "";
+                    } 
                 }
             } else {
                 document.getElementById("loginError").style.opacity = "1";
