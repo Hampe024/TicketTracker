@@ -7,7 +7,8 @@ System devoloped for a course at BTH
 [Node.js website](https://nodejs.org/en/download/package-manager/)
 
 ### MongoDB
-Install MongoDB and have it run on port 27017(default)
+Install MongoDB and ensure that it is running on port 27017(default)
+
 ```
 sudo apt-get install -y mongodb-org
 mongosh --port 27017
