@@ -47,6 +47,12 @@ Go to [/account/sender](https://app.mailjet.com/account/sender) and add a sender
 MAILJET_SEND_EMAIL=<email>
 ```
 
+#### Install npm packages
+In both /backend and /frontend
+```
+npm install
+```
+
 ## Startup
 
 ### MongoDB
