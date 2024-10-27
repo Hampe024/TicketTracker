@@ -4,7 +4,7 @@ System devoloped for a course at BTH
 ## Prerequisites
 
 ### Node.js and npm
-[Node.js website]([https://ngrok.com/](https://nodejs.org/en/download/package-manager/))
+[Node.js website](https://nodejs.org/en/download/package-manager/)
 
 ### MongoDB
 Install MongoDB and have it run on port 27017(default)
