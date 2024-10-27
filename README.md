@@ -3,6 +3,9 @@ System devoloped for a course at BTH
 
 ## Prerequisites
 
+### Node.js and npm
+[Node.js website]([https://ngrok.com/](https://nodejs.org/en/download/package-manager))
+
 ### MongoDB
 Install MongoDB and have it run on port 27017(default)
 ```
@@ -72,7 +75,16 @@ npm run run
 ## Known bugs/issues
 
 ### 1
-
+Customer accounts can be created by either registering, or by sending in a ticket. But agent and admin accounts can only be created using the admin dashboad. This means that the first admin user has to be created via api fetch. This can be done by sending a POST request to 'http://localhost:3000/user' containing this body:
+```
+{
+    "name": "John Doe",
+    "email": "admin1@mail.com",
+    "role": "admin",
+    "password": "test",
+    "firstTimeLogIn": false
+}
+```
 
 ### 2
 Sometimes when customers send an email to the CloudMailin adress, multiple api calls will be made no Ngrok with some time delay, leading to multiple tickets or comments being added to the system. This is belived to be an issue on Cloudmailins part.
