@@ -72,4 +72,7 @@ npm run run
 ## Known bugs/issues
 
 ### 1
+
+
+### 2
 Sometimes when customers send an email to the CloudMailin adress, multiple api calls will be made no Ngrok with some time delay, leading to multiple tickets or comments being added to the system. This is belived to be an issue on Cloudmailins part.
